@@ -1,10 +1,11 @@
 <template>
   <n-layout has-sider wh-full>
     <n-layout-sider
+      v-if="largerThanSm"
       bordered
       collapse-mode="width"
-      :collapsed-width="64"
-      :width="220"
+      :collapsed-width="172"
+      :width="172"
       :native-scrollbar="false"
       :collapsed="appStore.collapsed"
     >
@@ -14,9 +15,9 @@
     <article flex-col flex-1 overflow-hidden>
       <header
         border-b="1 solid #eee"
-        class="flex items-center bg-white px-15"
+        class="w-full flex items-center overflow-hidden bg-white px-15"
         dark="bg-dark border-0"
-        :style="`height: ${header.height}px`"
+        :style="`height: ${header.height}px;background:${header.background}`"
       >
         <AppHeader />
       </header>
@@ -37,6 +38,10 @@ import AppMain from './components/AppMain.vue'
 import AppTags from './components/tags/index.vue'
 import { useAppStore } from '@/store'
 import { header, tags } from '~/settings'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const largerThanSm = breakpoints.greater('sm') // only larger than sm
 
 const appStore = useAppStore()
 </script>

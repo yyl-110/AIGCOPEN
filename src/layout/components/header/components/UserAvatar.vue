@@ -1,5 +1,11 @@
 <template>
-  <n-dropdown :options="options" @select="handleSelect">
+  <n-dropdown
+    :options="options"
+    size="medium"
+    class="b-rd-10 bg-#fff color-#434242"
+    trigger="click"
+    @select="handleSelect"
+  >
     <div flex cursor-pointer items-center>
       <img :src="userStore.avatar" mr10 h-35 w-35 rounded-full />
       <span>{{ userStore.name }}</span>
@@ -9,15 +15,25 @@
 
 <script setup>
 import { useUserStore } from '@/store'
-import { renderIcon } from '@/utils'
+import { renderCustomIcon, renderIcon } from '@/utils'
 
 const userStore = useUserStore()
 
 const options = [
   {
-    label: '退出登录',
+    label: '简介',
+    key: 'introduction',
+    icon: renderCustomIcon('jj', { size: '14px' }),
+  },
+  {
+    label: '建议反馈',
+    key: 'feedback',
+    icon: renderCustomIcon('feedback', { size: '14px' }),
+  },
+  {
+    label: '退出',
     key: 'logout',
-    icon: renderIcon('mdi:exit-to-app', { size: '14px' }),
+    icon: renderCustomIcon('exit', { size: '14px' }),
   },
 ]
 
@@ -35,3 +51,9 @@ function handleSelect(key) {
   }
 }
 </script>
+
+<style lang="scss">
+.n-dropdown-option-body__label {
+  color: #434242;
+}
+</style>

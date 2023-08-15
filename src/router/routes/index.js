@@ -33,6 +33,7 @@ export const EMPTY_ROUTE = {
 }
 
 const modules = import.meta.glob('@/views/**/route.js', { eager: true })
+console.log('modules:', modules)
 const asyncRoutes = []
 Object.keys(modules).forEach((key) => {
   asyncRoutes.push(modules[key].default)

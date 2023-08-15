@@ -84,6 +84,7 @@ function getMenuItem(route, basePath = '') {
       .map((item) => getMenuItem(item, menuItem.path))
       .sort((a, b) => a.order - b.order)
   }
+  console.log('menuItem:', menuItem)
   return menuItem
 }
 
@@ -103,16 +104,39 @@ function handleMenuSelect(key, item) {
 </script>
 
 <style lang="scss">
+.n-layout-sider {
+  background-color: #2c2e33;
+}
+
 .side-menu:not(.n-menu--collapsed) {
   .n-menu-item-content {
-    &::before {
-      left: 5px;
-      right: 5px;
+    justify-content: center;
+    width: 132px;
+    height: 40px;
+    margin: 0 auto 0;
+
+    .n-menu-item-content__icon {
+      color: #fff;
     }
+
+    &::before {
+      display: none;
+    }
+
+    .n-menu-item-content-header {
+      font-weight: bold;
+      color: #fff;
+      font-size: 13px;
+    }
+
     &.n-menu-item-content--selected,
     &:hover {
-      &::before {
-        border-left: 4px solid var(--primary-color);
+      background-color: #1a1b1e;
+      border-radius: 8px;
+      color: #fff;
+
+      .n-menu-item-content-header {
+        color: #fff;
       }
     }
   }

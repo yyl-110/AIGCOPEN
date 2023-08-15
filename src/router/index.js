@@ -31,10 +31,10 @@ export async function addDynamicRoutes() {
   const token = getToken()
 
   // 没有token情况
-  if (isNullOrWhitespace(token)) {
-    router.addRoute(EMPTY_ROUTE)
-    return
-  }
+  // if (isNullOrWhitespace(token)) {
+  router.addRoute(EMPTY_ROUTE)
+  //   return
+  // }
 
   // 有token的情况
   try {

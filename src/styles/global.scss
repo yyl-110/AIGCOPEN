@@ -72,3 +72,21 @@ body {
     }
   }
 }
+.main_container {
+  background-image: url(@/assets/images/main_bg.png);
+  background-size: 100% 1180px;
+  background-repeat: no-repeat;
+}
+
+.ellipsis1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ellipsis3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
