@@ -7,6 +7,7 @@
     </div>
     <div
       class="edit absolute right-5 top-5 cursor-pointer b-rd-20 bg-#1A1B1E px-9 py-4 text-13 text-#fff"
+      @click="$router.push('/user/info')"
     >
       修改
     </div>

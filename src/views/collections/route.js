@@ -18,5 +18,16 @@ export default {
         order: 1,
       },
     },
+    {
+      name: 'CollectionsDetail',
+      path: 'detail',
+      component: () => import('./detail/index.vue'),
+      isHidden: true,
+      meta: {
+        title: '分类集合',
+        customIcon: 'collections',
+        order: 1,
+      },
+    },
   ],
 }

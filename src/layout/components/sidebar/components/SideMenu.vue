@@ -115,6 +115,16 @@ function handleMenuSelect(key, item) {
     height: 40px;
     margin: 0 auto 0;
 
+    &:hover {
+      .n-menu-item-content__icon {
+        color: #fff !important;
+      }
+
+      .n-menu-item-content-header {
+        color: #fff !important;
+      }
+    }
+
     .n-menu-item-content__icon {
       color: #fff;
     }

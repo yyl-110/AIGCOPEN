@@ -18,5 +18,15 @@ export default {
         order: 1,
       },
     },
+    {
+      name: 'UserInfo',
+      path: 'info',
+      component: () => import('./setting/index.vue'),
+      isHidden: true,
+      meta: {
+        title: '详细信息',
+        order: 1,
+      },
+    },
   ],
 }

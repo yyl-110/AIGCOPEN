@@ -14,8 +14,8 @@
       "primaryColorPressed": "#2B4C59FF",
       "primaryColorSuppl": "#316C72E3",
 
-      "infoColor": "#2080F0FF",
-      "infoColorHover": "#4098FCFF",
+      "infoColor": "#C5191F",
+      "infoColorHover": "rgba(197, 25, 31, 0.7)",
       "infoColorPressed": "#1060C9FF",
       "infoColorSuppl": "#4098FCFF",
 

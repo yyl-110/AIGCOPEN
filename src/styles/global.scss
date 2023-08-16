@@ -90,3 +90,31 @@ body {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
+.ellipsis4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+.ellipsis2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+* {
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #c5191f;
+    border-radius: 5px;
+  }
+}
+input,
+textarea {
+  caret-color: #fff !important;
+}

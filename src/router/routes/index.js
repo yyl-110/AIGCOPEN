@@ -4,8 +4,8 @@ export const basicRoutes = [
   {
     name: '404',
     path: '/404',
-    component: () => import('@/views/error-page/404.vue'),
     isHidden: true,
+    component: () => import('@/views/error-page/404.vue'),
   },
 
   {
@@ -16,6 +16,24 @@ export const basicRoutes = [
     meta: {
       title: '登录页',
     },
+  },
+  {
+    name: 'News',
+    path: '/news',
+    component: Layout,
+    meta: {
+      order: 6,
+    },
+    children: [
+      {
+        name: 'News',
+        path: 'http://news.aigcopen.com',
+        meta: {
+          title: '新闻',
+          customIcon: 'news',
+        },
+      },
+    ],
   },
 ]
 
