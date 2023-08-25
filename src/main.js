@@ -9,9 +9,11 @@ import { setupRouter } from '@/router'
 import { setupStore } from '@/store'
 import App from './App.vue'
 import { setupNaiveDiscreteApi } from './utils'
+import Login from '@/components/common/login/login'
 
 async function setupApp() {
   const app = createApp(App)
+  app.config.globalProperties.$Login = Login
 
   setupStore(app)
   setupNaiveDiscreteApi()

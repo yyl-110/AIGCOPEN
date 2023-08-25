@@ -18,5 +18,15 @@ export default {
         order: 1,
       },
     },
+    {
+      name: 'Detail',
+      path: 'detail',
+      component: () => import('./detail/index.vue'),
+      isHidden: true,
+      meta: {
+        title: '赏金任务',
+        order: 1,
+      },
+    },
   ],
 }

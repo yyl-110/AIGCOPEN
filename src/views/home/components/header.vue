@@ -13,7 +13,7 @@
     </div>
     <div class="mt-64 min-h-166 w-full flex flex-nowrap lt-sm:mt-32 lt-sm:flex-wrap">
       <n-input
-        v-model="searchValue"
+        v-model:value="searchData"
         type="textarea"
         :autosize="{
           minRows: 3,
@@ -21,6 +21,7 @@
         }"
         placeholder="输入关键词，搜索Prompt或与AI进行对话"
         class="flex-1 resize-none border-1 border-#7D7D7D b-rd-10 border-solid text-22 lg:text-22 lt-sm:text-16 md:text-16 sm:text-16"
+        @input="updateValue"
       />
       <div
         class="ml-28 w-200 flex flex-col justify-between lt-sm:ml-0 lt-sm:mt-20 lt-sm:w-full lt-sm:flex-row lt-sm:justify-center"
@@ -55,8 +56,28 @@
 
 <script setup>
 import { ref } from 'vue'
+import _ from 'lodash'
+const emit = defineEmits(['updateValue'])
+const props = defineProps({
+  searchValue: {
+    type: String,
+    default: '',
+  },
+})
+const searchData = ref('')
+const updateValue = _.debounce((e) => {
+  emit('updateValue', e)
+}, 500)
 
-const searchValue = ref('')
+watch(
+  () => props.searchValue,
+  (val) => {
+    searchData.value = val
+  },
+  {
+    immediate: true,
+  }
+)
 </script>
 
 <style lang="scss" scoped>

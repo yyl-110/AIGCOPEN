@@ -1,5 +1,6 @@
 export function createPageLoadingGuard(router) {
   router.beforeEach(() => {
+    // localStorage.setItem('vueuse-color-scheme', 'dark')
     window.$loadingBar?.start()
   })
 

@@ -20,8 +20,26 @@
 </template>
 
 <script setup>
+import api from '~/src/api'
 import info from './components/info.vue'
 import Tabs from './components/tabs.vue'
+import { useUserStore } from '~/src/store'
+const userInfo = useUserStore()
+const fetchUserInfo = async () => {
+  const params = {
+    0: { json: 10 },
+    1: {
+      json: { followingUserId: null, followedUserId: userInfo.userId },
+      meta: { values: { followingUserId: ['undefined'] } },
+    },
+  }
+  const res = await api.getAllUserInfo({ input: JSON.stringify(params) })
+  console.log('res:', res)
+}
+
+onMounted(() => {
+  fetchUserInfo()
+})
 </script>
 
 <style scoped>

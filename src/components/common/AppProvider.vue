@@ -3,7 +3,7 @@
     wh-full
     :locale="zhCN"
     :date-locale="dateZhCN"
-    :theme="appStore.isDark ? darkTheme : undefined"
+    :theme="darkTheme"
     :theme-overrides="naiveThemeOverrides"
   >
     <slot />

@@ -16,8 +16,55 @@
 </template>
 
 <script setup>
+import api from '~/src/api'
 import promptDetail from '../components/promptDetail.vue'
 import Special from '../components/special.vue'
+const loading = ref(true)
+const detail = ref({})
+
+const fetchData = async () => {
+  loading.value = true
+  const params = {
+    0: { json: 10 },
+    1: { json: 208 },
+    2: { json: 208 },
+    3: { json: 208 },
+    4: { json: { followingUserId: '', followedUserId: 208 } },
+    5: {
+      json: {
+        tags: [
+          '有创意的',
+          '英语',
+          '市场营销',
+          ' 想法',
+          '头脑风暴',
+          '社交媒体',
+          'Copywriting',
+          '内容营销',
+          '业务',
+          '启动',
+          '创业',
+          '生产力',
+          '营销计划',
+          '业务发展',
+          'template',
+          '商业计划',
+        ],
+        limit: 5,
+      },
+    },
+    6: { json: null, meta: { values: ['undefined'] } },
+  }
+  const res = await api.getCollectionsDetail({ input: JSON.stringify(params) })
+  loading.value = false
+  if (res && res.length) {
+    detail.value = res[1]?.result?.data?.json
+  }
+  console.log('res:', res)
+}
+onMounted(() => {
+  fetchData()
+})
 </script>
 
 <style lang="scss" scoped></style>

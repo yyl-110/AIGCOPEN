@@ -1,0 +1,313 @@
+
+           {
+              "json": [
+                  {
+                      "createdAt": "2023-08-10 17:50:31",
+                      "creditUsage": "0.059",
+                      "frequencyPenalty": 0,
+                      "id": "6901",
+                      "length": 1,
+                      "live": true,
+                      "maxTokens": 4096,
+                      "method": null,
+                      "model": "gpt-3.5-turbo",
+                      "name": null,
+                      "presencePenalty": 0,
+                      "public": true,
+                      "temperature": "0.7",
+                      "topP": 1,
+                      "updatedAt": "2023-08-10 17:50:31",
+                      "userId": "1550",
+                      "messages": [
+                          {
+                              "role": "user",
+                              "content": "用一句话夸夸我。"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "你是一颗闪耀的星星，散发着独特的魅力和无限的潜力！"
+                          }
+                      ]
+                  },
+                  {
+                      "createdAt": "2023-08-10 17:51:43",
+                      "creditUsage": "0.031",
+                      "frequencyPenalty": 0,
+                      "id": "6902",
+                      "length": 1,
+                      "live": true,
+                      "maxTokens": 4096,
+                      "method": null,
+                      "model": "gpt-3.5-turbo",
+                      "name": null,
+                      "presencePenalty": 0,
+                      "public": true,
+                      "temperature": "0.7",
+                      "topP": 1,
+                      "updatedAt": "2023-08-10 17:51:43",
+                      "userId": "1550",
+                      "messages": [
+                          {
+                              "role": "user",
+                              "content": "1"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "你好！有什么我可以帮助您的吗？"
+                          }
+                      ]
+                  },
+                  {
+                      "createdAt": "2023-08-16 10:51:53",
+                      "creditUsage": "0.031",
+                      "frequencyPenalty": 0,
+                      "id": "6953",
+                      "length": 20,
+                      "live": true,
+                      "maxTokens": 4096,
+                      "method": null,
+                      "model": "gpt-3.5-turbo",
+                      "name": null,
+                      "presencePenalty": 0,
+                      "public": true,
+                      "temperature": "0.7",
+                      "topP": 1,
+                      "updatedAt": "2023-08-16 10:51:53",
+                      "userId": "1550",
+                      "messages": [
+                          {
+                              "role": "user",
+                              "content": "1"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！有什么我可以帮助您的吗？"
+                          },
+                          {
+                              "role": "user",
+                              "content": "1"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！有什么我可以帮助您的吗？"
+                          },
+                          {
+                              "role": "user",
+                              "content": "j"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "嗨！您好！请问您需要什么帮助吗？\n"
+                          },
+                          {
+                              "role": "user",
+                              "content": "1"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！有什么我可以帮助您的吗？"
+                          },
+                          {
+                              "role": "user",
+                              "content": "j"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "嗨！您好！请问您需要什么帮助吗？\n"
+                          },
+                          {
+                              "role": "user",
+                              "content": "hh"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！我是AIGCOpen社区的ChatGPT助手，很高兴为您提供帮助。请告诉我您有什么问题或需求，我将尽力为您解答或提供支持。"
+                          },
+                          {
+                              "role": "user",
+                              "content": "1"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！有什么我可以帮助您的吗？"
+                          },
+                          {
+                              "role": "user",
+                              "content": "j"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "嗨！您好！请问您需要什么帮助吗？\n"
+                          },
+                          {
+                              "role": "user",
+                              "content": "hh"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！我是AIGCOpen社区的ChatGPT助手，很高兴为您提供帮助。请告诉我您有什么问题或需求，我将尽力为您解答或提供支持。"
+                          },
+                          {
+                              "role": "user",
+                              "content": "js"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！\"js\" 通常是 JavaScript 的缩写，它是一种用于编写网页和应用程序的脚本语言。JavaScript 可以用来控制网页的行为、操作 DOM 元素、处理用户输入等等。如果您对 JavaScript 有任何问题或需要学习相关知识，请随时告诉我，我会尽力为您提供帮助！"
+                          },
+                          {
+                              "role": "user",
+                              "content": "1"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！有什么我可以帮助您的吗？"
+                          },
+                          {
+                              "role": "user",
+                              "content": "j"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "嗨！您好！请问您需要什么帮助吗？\n"
+                          },
+                          {
+                              "role": "user",
+                              "content": "hh"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！我是AIGCOpen社区的ChatGPT助手，很高兴为您提供帮助。请告诉我您有什么问题或需求，我将尽力为您解答或提供支持。"
+                          },
+                          {
+                              "role": "user",
+                              "content": "js"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！\"js\" 通常是 JavaScript 的缩写，它是一种用于编写网页和应用程序的脚本语言。JavaScript 可以用来控制网页的行为、操作 DOM 元素、处理用户输入等等。如果您对 JavaScript 有任何问题或需要学习相关知识，请随时告诉我，我会尽力为您提供帮助！"
+                          },
+                          {
+                              "role": "user",
+                              "content": "vue"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "Vue.js 是一个流行的 JavaScript 前端框架，用于构建交互式的用户界面。它采用了组件化的开发方式，使得前端开发更加模块化、可维护和可扩展。\n\nVue.js 具有以下特点：\n- **响应式数据绑定**：通过使用 Vue.js 的数据绑定语法，可以实现数据的双向绑定，即数据的变化会自动反映到视图上，而视图的变化也会自动更新数据。\n- **组件化开发**：Vue.js 允许将页面拆分为多个可复用的组件，每个组件都有自己的逻辑和样式，便于团队协作和代码复用。\n- **虚拟 DOM**：Vue.js 使用虚拟 DOM 技术，通过比对虚拟 DOM 的差异来实现高效的 DOM 更新，从而提升性能。\n- **轻量级**：Vue.js 的体积很小，加载速度快，适合用于开发轻量级的单页面应用。\n\n如果您想学习 Vue.js，可以查阅 Vue.js 的官方文档，其中包含了详细的教程和示例代码。此外，还有许多在线教程、视频课程和社区资源可供参考。如果您有具体的问题，我也可以帮助您解答。"
+                          },
+                          {
+                              "role": "user",
+                              "content": "1"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！有什么我可以帮助您的吗？"
+                          },
+                          {
+                              "role": "user",
+                              "content": "j"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "嗨！您好！请问您需要什么帮助吗？\n"
+                          },
+                          {
+                              "role": "user",
+                              "content": "hh"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！我是AIGCOpen社区的ChatGPT助手，很高兴为您提供帮助。请告诉我您有什么问题或需求，我将尽力为您解答或提供支持。"
+                          },
+                          {
+                              "role": "user",
+                              "content": "js"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "您好！\"js\" 通常是 JavaScript 的缩写，它是一种用于编写网页和应用程序的脚本语言。JavaScript 可以用来控制网页的行为、操作 DOM 元素、处理用户输入等等。如果您对 JavaScript 有任何问题或需要学习相关知识，请随时告诉我，我会尽力为您提供帮助！"
+                          },
+                          {
+                              "role": "user",
+                              "content": "vue"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "Vue.js 是一种流行的 JavaScript 前端框架，用于构建交互式的用户界面。它的核心思想是通过数据驱动视图，使开发者可以轻松地构建可复用的组件，并实现响应式的数据绑定。\n\n如果您对 Vue.js 有任何问题或需要学习相关知识，请告诉我，我会尽力为您提供帮助！"
+                          }
+                      ]
+                  },
+                  {
+                      "createdAt": "2023-08-16 11:36:12",
+                      "creditUsage": "0.008",
+                      "frequencyPenalty": 0,
+                      "id": "6955",
+                      "length": 1,
+                      "live": true,
+                      "maxTokens": 2048,
+                      "method": null,
+                      "model": "chatgpt",
+                      "name": null,
+                      "presencePenalty": 0,
+                      "public": true,
+                      "temperature": "0.7",
+                      "topP": 1,
+                      "updatedAt": "2023-08-16 11:36:12",
+                      "userId": "1550",
+                      "messages": [
+                          {
+                              "role": "user",
+                              "content": "1"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "你好！我是AIGCOpen社区的ChatGPT助手。请告诉我您需要帮助的事情，我会尽力提供解答或建议。"
+                          }
+                      ]
+                  },
+                  {
+                      "createdAt": "2023-08-16 16:56:19",
+                      "creditUsage": "0.031",
+                      "frequencyPenalty": 0,
+                      "id": "6960",
+                      "length": 3,
+                      "live": true,
+                      "maxTokens": 4096,
+                      "method": null,
+                      "model": "gpt-3.5-turbo",
+                      "name": null,
+                      "presencePenalty": 0,
+                      "public": true,
+                      "temperature": "0.7",
+                      "topP": 1,
+                      "updatedAt": "2023-08-16 16:56:19",
+                      "userId": "1550",
+                      "messages": [
+                          {
+                              "role": "user",
+                              "content": "h"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "你好！有什么我可以帮助您的吗？"
+                          },
+                          {
+                              "role": "user",
+                              "content": "h"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "你好！有什么我可以帮助你的吗？"
+                          },
+                          {
+                              "role": "user",
+                              "content": "h333"
+                          },
+                          {
+                              "role": "assistant",
+                              "content": "你好！你有什么问题或需要帮助吗？"
+                          }
+                      ]
+                  }
+              ]
+          }

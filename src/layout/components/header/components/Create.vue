@@ -1,11 +1,10 @@
 <template>
-  <n-popselect
-    v-model="value"
+  <n-dropdown
     :options="options"
     size="medium"
-    scrollable
+    class="b-rd-10 bg-#fff color-#434242"
     trigger="click"
-    class="b-rd-10 bg-#fff"
+    @select="handleSelect"
   >
     <n-button
       round
@@ -18,30 +17,43 @@
       </template>
       创建
     </n-button>
-  </n-popselect>
+  </n-dropdown>
 </template>
 
 <script setup>
+import { watch } from 'vue'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const largerThanSm = breakpoints.greater('sm') // only larger than sm
-const value = ref(1)
+const value = ref(-1)
 const options = [
   {
     label: 'Prompt提词板',
-    value: 1,
+    key: 1,
   },
   {
     label: 'Prompt格式化模板',
-    value: 2,
+    key: 2,
   },
 ]
+const handleSelect = (val) => {
+  if (val === 1) {
+    router.push('/create')
+  }
+  if (val === 2) {
+    router.push('/create/template')
+  }
+}
 </script>
 <style lang="scss">
 .n-base-select-option {
   color: #434242 !important;
 }
+
 .n-base-select-menu .n-base-select-option:hover {
   &::before {
     background-color: #efefef;

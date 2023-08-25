@@ -88,3 +88,10 @@ export function useResize(el, cb) {
   observer.observe(el)
   return observer
 }
+
+export const getUrl = (url) => {
+  if (url.includes('http')) {
+    return url
+  }
+  return import.meta.env.VITE_BASE_API + url
+}

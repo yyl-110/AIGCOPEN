@@ -9,15 +9,6 @@ export const basicRoutes = [
   },
 
   {
-    name: 'Login',
-    path: '/login',
-    component: () => import('@/views/login/index.vue'),
-    isHidden: true,
-    meta: {
-      title: '登录页',
-    },
-  },
-  {
     name: 'News',
     path: '/news',
     component: Layout,
@@ -31,6 +22,73 @@ export const basicRoutes = [
         meta: {
           title: '新闻',
           customIcon: 'news',
+        },
+      },
+    ],
+  },
+  {
+    name: 'chatRoom',
+    path: '/c',
+    component: Layout,
+    isHidden: true,
+    meta: {
+      order: 7,
+    },
+    children: [
+      {
+        name: 'ChatRoom',
+        path: '',
+        component: () => import('@/views/chatRoom/index.vue'),
+        meta: {
+          title: '对话分享',
+          customIcon: 'chat',
+          order: 0,
+        },
+      },
+    ],
+  },
+  {
+    name: 'Prompt',
+    path: '/prompt',
+    component: Layout,
+    isHidden: true,
+    meta: {
+      order: 10,
+    },
+    children: [
+      {
+        name: 'Prompt',
+        path: '',
+        component: () => import('@/views/prompt/index.vue'),
+        meta: {
+          order: 0,
+        },
+      },
+    ],
+  },
+  {
+    name: 'Create',
+    path: '/create',
+    component: Layout,
+    isHidden: true,
+    meta: {
+      order: 8,
+    },
+    children: [
+      {
+        name: 'Create',
+        path: '',
+        component: () => import('@/views/create/index.vue'),
+        meta: {
+          title: '创造和分享你的Prompts提示词',
+        },
+      },
+      {
+        name: 'Template',
+        path: 'template',
+        component: () => import('@/views/create/template/index.vue'),
+        meta: {
+          title: '创造你的Prompts模板',
         },
       },
     ],
@@ -51,10 +109,14 @@ export const EMPTY_ROUTE = {
 }
 
 const modules = import.meta.glob('@/views/**/route.js', { eager: true })
-console.log('modules:', modules)
-const asyncRoutes = []
+let asyncRoutes = []
+const userId = localStorage.getItem('userId')
 Object.keys(modules).forEach((key) => {
   asyncRoutes.push(modules[key].default)
 })
+if (!userId) {
+  asyncRoutes = asyncRoutes.filter((i) => i.name !== 'User')
+}
+console.log('asyncRoutes:', asyncRoutes, userId)
 
 export { asyncRoutes }

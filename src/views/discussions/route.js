@@ -18,5 +18,15 @@ export default {
         order: 1,
       },
     },
+    {
+      name: 'CreateDiscussions',
+      path: 'create',
+      isHidden: true,
+      component: () => import('./Create/index.vue'),
+      meta: {
+        title: '创建讨论',
+        order: 1,
+      },
+    },
   ],
 }

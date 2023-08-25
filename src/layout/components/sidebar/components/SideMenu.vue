@@ -84,7 +84,6 @@ function getMenuItem(route, basePath = '') {
       .map((item) => getMenuItem(item, menuItem.path))
       .sort((a, b) => a.order - b.order)
   }
-  console.log('menuItem:', menuItem)
   return menuItem
 }
 

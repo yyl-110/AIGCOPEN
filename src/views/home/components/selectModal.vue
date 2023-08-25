@@ -24,11 +24,13 @@
             <div
               v-for="(item, index) in tagList"
               :key="index"
+              :class="item.select ? 'active' : ''"
               class="item m-5 flex cursor-pointer items-center justify-center b-rd-8 bg-#CACACA px-16 py-8 text-#000 hover:bg-#000 hover:text-#fff"
+              @click="handleSelect(item, index)"
             >
-              <TheIcon icon="choose" type="custom" class="mr-5" />
-              <TheIcon v-if="false" icon="current" type="custom" class="mr-5" />
-              {{ item }}
+              <TheIcon v-if="item.select" icon="current" type="custom" class="mr-5" />
+              <TheIcon v-else icon="choose" type="custom" class="mr-5" />
+              {{ item.name }}
             </div>
           </div>
         </div>
@@ -37,10 +39,13 @@
         <div class="flex items-center">
           <div
             class="save h-38 w-90 flex cursor-pointer items-center justify-center b-rd-5 bg-#C5191F text-15 text-#fff"
+            @click="handleSave"
           >
             保存
           </div>
-          <span class="ml-13 text-14 text-#000">不再显示该偏好设置</span>
+          <span class="ml-13 cursor-pointer text-14 text-#000" @click="showModal = false">
+            不再显示该偏好设置
+          </span>
         </div>
       </template>
     </n-card>
@@ -49,44 +54,59 @@
 
 <script setup>
 const showModal = ref(false)
-const tagList = ref([
-  'stableDiffusion',
-  '生产力',
-  '头脑',
-  '娱乐',
-  '生产力',
-  '头脑',
-  'stableDiffusion',
-  'stableDiffusion',
-  '娱乐',
-  '头脑',
-  '娱乐',
-  '生产力',
-  '生产力',
-  '头脑',
-  'stableDiffusion',
-  '娱乐',
-  '生产力',
-  '头脑',
-  'stableDiffusion',
-  '娱乐',
-  '生产力',
-  '头脑',
-  'stableDiffusion',
-  '娱乐',
-])
+const props = defineProps({
+  selectData: {
+    type: Array,
+    default: () => {},
+  },
+})
+const emits = defineEmits(['handleSave'])
+const tagList = ref([])
 const show = () => {
   showModal.value = true
+}
+const hide = () => {
+  showModal.value = false
+}
+
+const handleSelect = (item) => {
+  tagList.value = tagList.value.map((i) => {
+    if (item.id === i.id) {
+      return { ...item, select: !item.select }
+    }
+    return { ...i }
+  })
+}
+
+const handleSave = () => {
+  emits('handleSave', tagList.value)
 }
 
 defineExpose({
   show,
+  hide,
 })
+watch(
+  () => props.selectData,
+  (val) => {
+    if (val) {
+      tagList.value = val
+    }
+  },
+  { deep: true }
+)
 </script>
 
 <style lang="scss" scoped>
 .n-card > :deep(.n-card-header) {
   padding: 0 !important;
+}
+
+.item {
+  &.active {
+    background-color: #000000;
+    color: #fff;
+  }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1500px) {

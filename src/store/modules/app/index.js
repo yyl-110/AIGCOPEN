@@ -6,7 +6,7 @@ export const useAppStore = defineStore('app', {
   state() {
     return {
       collapsed: false,
-      isDark: true,
+      isDark,
     }
   },
   actions: {

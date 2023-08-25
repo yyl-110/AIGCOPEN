@@ -107,7 +107,8 @@ body {
 
 * {
   &::-webkit-scrollbar {
-    width: 5px;
+    width: 3px;
+    height: 3px;
   }
   &::-webkit-scrollbar-thumb {
     background-color: #c5191f;
@@ -117,4 +118,18 @@ body {
 input,
 textarea {
   caret-color: #fff !important;
+}
+
+.n-base-select-menu {
+  background: #1b1b1b !important;
+
+  .n-base-select-option {
+    color: #ffffff !important;
+    background-color: transparent !important;
+    &:hover {
+      &::before {
+        background: #000000 !important;
+      }
+    }
+  }
 }
