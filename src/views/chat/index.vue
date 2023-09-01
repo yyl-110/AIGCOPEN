@@ -5,7 +5,7 @@
         class="h-98% w-full flex flex-items-start overflow-hidden px-50 pt-40 lt-sm:h-full lt-sm:flex-wrap lt-sm:overflow-y-auto lt-sm:px-10 lt-sm:pt-12"
       >
         <div
-          class="h-full min-w-280 w-30% b-rd-10 bg-#2C2E3399 pb-20 pt-20 lt-sm:h-auto lt-sm:h-auto lt-sm:w-100%"
+          class="h-full min-w-280 w-30% flex-shrink-0 b-rd-10 bg-#2C2E3399 pb-20 pt-20 lt-sm:h-auto lt-sm:h-auto lt-sm:w-100%"
         >
           <div
             class="inner px-17 pb-16 lt-sm:px-9 lt-sm:pb-8"
@@ -20,7 +20,12 @@
             </div>
           </div>
           <!-- prompts -->
-          <Prompts :data="data" @handelSelect="handelSelect" @handelDel="handelDel" />
+          <Prompts
+            :data="data"
+            :chat-state="chatState"
+            @handelSelect="handelSelect"
+            @handelDel="handelDel"
+          />
         </div>
         <div
           class="chat relative ml-23 h-full flex-1 b-rd-10 bg-#25262B66 lt-sm:ml-0 lt-sm:mt-10 lt-sm:h-auto lt-sm:min-h-500"
@@ -28,7 +33,13 @@
           <img src="@/assets/images/logo_text.png" class="logoText absolute w-348" alt="" />
           <!-- 设置 -->
           <Setting v-if="chatState === 2" />
-          <chatBox :data="chatItem" :chat-state="chatState" />
+          <chatBox
+            :data="chatItem"
+            :chat-state="chatState"
+            :chat-link-id="chatLinkId"
+            @changeId="handelChangeId"
+            @getChatList="handelGetList"
+          />
         </div>
       </div>
     </div>
@@ -46,8 +57,10 @@ const userInfo = useUserStore()
 const data = ref([])
 const chatItem = ref({})
 const chatState = ref(2) // 1 查看历史 2 新建聊天
+const chatLinkId = ref(null) //当前聊天的id
 
 const handelSelect = (id) => {
+  chatLinkId.value = id
   chatItem.value = data.value.find((i) => i.id === id)
   chatState.value = 1
 }
@@ -55,7 +68,9 @@ const handelDel = (id) => {
   data.value = data.value.filter((i) => i.id !== id)
   $message.success('删除成功')
   chatState.value = 2
+  chatItem.value = {}
 }
+
 const fetchData = async () => {
   const params = {
     0: { json: userInfo.userId },
@@ -72,6 +87,20 @@ const fetchData = async () => {
 const handelNewChat = () => {
   chatState.value = 2
   chatItem.value = {}
+  chatLinkId.value = ''
+}
+
+const handelChangeId = (id) => {
+  chatLinkId.value = id
+}
+
+const handelGetList = async () => {
+  const res = await api.getRecentConversations({
+    input: JSON.stringify({ 0: { json: userInfo.userId } }),
+  })
+  if (res && res.length) {
+    data.value = res[0]?.result?.data?.json
+  }
 }
 
 onMounted(() => {

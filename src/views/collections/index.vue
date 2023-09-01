@@ -9,7 +9,7 @@
         <div class="list mt-25 lt-sm:mt-10">
           <empty v-if="!loading && listData.length === 0" text="暂无数据!" :show-btn="false" />
           <n-grid cols="2 s:3 m:4 l:4 xl:4 2xl:5" :x-gap="12" :y-gap="22" responsive="screen">
-            <n-grid-item v-for="item in listData" :key="item.id">
+            <n-grid-item v-for="item in listData" :key="item.id" class="h-full">
               <card :card-data="item" />
             </n-grid-item>
           </n-grid>

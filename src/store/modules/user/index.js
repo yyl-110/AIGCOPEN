@@ -39,6 +39,7 @@ export const useUserStore = defineStore('user', {
         const res = await api.session()
         const { id, name, image, role } = res?.user || {}
         const userParams = { 0: { json: id }, 1: { json: id } }
+        if (!id) return
         const resUser = await api.getUserProfile({
           batch: 1,
           input: JSON.stringify(userParams),
@@ -52,6 +53,30 @@ export const useUserStore = defineStore('user', {
         console.log('error:', error)
         return Promise.reject(error)
       }
+    },
+    async updateUserInfo(amount = 0.0) {
+      const params = { 0: { json: { userId: this.userInfo.id, amount, type: 'CHAT_CHATGPT' } } }
+      const res = await api.updateUserCredit(params)
+      if (res && res.length) {
+        const user = res[0]?.result?.data?.json
+        const { id, name, image, role, interests, createdAt, credit } = user[0] || {}
+        console.log('user:', user)
+        this.userInfo = {
+          id,
+          name,
+          avatar: image,
+          role,
+          interests,
+          createdAt,
+          moeny: Number(parseFloat(credit) - parseFloat(amount)),
+        }
+      }
+    },
+    updataMoeny(amount = 0.0) {
+      this.userInfo.moeny = amount
+    },
+    updateInterests(interests) {
+      this.userInfo.interests = interests
     },
     async logout() {
       const { resetTags } = useTagsStore()

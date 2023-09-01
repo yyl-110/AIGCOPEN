@@ -13,7 +13,7 @@
           <div
             class="chat h-700 w-full overflow-hidden overflow-y-auto b-rd-r-20 bg-#25262BCC lt-lg:h-auto lt-lg:b-rd-b-10 lt-lg:b-rd-t-0"
           >
-            <chatBox :prompt-data="promptData" />
+            <chatBox :prompt-data="promptData" :prompt-id="promptId" />
           </div>
         </n-grid-item>
       </n-grid>

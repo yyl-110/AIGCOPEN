@@ -13,9 +13,11 @@
     </div>
     <div class="search mt-18 w-full lt-sm:mt-9">
       <n-input
+        v-model:value="searchVal"
         placeholder="搜索"
         :size="largerThanSm ? 'large' : 'medium'"
         class="input b-rd-10 bg-#FFFFFFA6 text-#47484D"
+        @input="handelSearch"
       >
         <template #prefix>
           <TheIcon icon="search" class="text-#6D6D6D" type="custom" size="18" />
@@ -23,11 +25,11 @@
       </n-input>
     </div>
     <div class="flex-1 overflow-y-auto">
-      <empty v-if="false" :type="activeIndex" />
+      <empty v-if="!filteredData.length" :type="activeIndex" />
       <!-- 我的对话 -->
       <div v-if="activeIndex === 0" class="chat">
         <div
-          v-for="(item, index) in data"
+          v-for="(item, index) in filteredData"
           :key="item.id"
           :class="selectChat === index ? 'chatActive' : ''"
           class="mychart mb-7 h-48 w-full flex cursor-pointer items-center justify-between b-rd-6 bg-#D9D9D90F px-8 hover:bg-#FFFFFF61"
@@ -92,6 +94,16 @@ const largerThanSm = breakpoints.greater('sm') // only larger than sm
 const navList = ref(['我的对话', '我的Prompts', '已保存'])
 const activeIndex = ref(0)
 const selectChat = ref(-1)
+const searchVal = ref('')
+
+/* 搜索过滤 */
+const filteredData = computed(() => {
+  console.log(props.data)
+  return props.data.filter((item) => {
+    const regex = new RegExp(searchVal.value, 'i') // "i"表示不区分大小写
+    return regex.test(item?.messages[0]?.content)
+  })
+})
 
 const handelSelect = (index, id) => {
   selectChat.value = index
@@ -102,9 +114,21 @@ const delRecord = async (item) => {
   const res = await api.delChat({ 0: { json: item.id } })
   if (res && res.length) {
     emits('handelDel', item.id)
-    selectChat.value(-1)
+    selectChat.value = -1
   }
 }
+/* 搜索 */
+const handelSearch = (val) => {
+  console.log('val:', val)
+}
+watch(
+  () => props.chatState,
+  (val) => {
+    if (val === 2) {
+      selectChat.value = -1
+    }
+  }
+)
 </script>
 
 <style lang="scss" scoped>

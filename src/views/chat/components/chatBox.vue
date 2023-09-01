@@ -5,18 +5,19 @@
       ref="scrollRef"
       class="chat w-full flex flex-col flex-1 overflow-y-auto pr-22"
     >
-      <div v-for="item in data.messages" class="message w-full flex flex-col">
+      <div v-for="(item, index) in message" :key="index" class="message w-full flex flex-col">
         <div
           v-if="item.role === 'assistant'"
           class="left mb-32 mt-4 w-full flex flex-row gap-8 text-#fff"
         >
           <img src="@/assets/images/chatgpt.png" alt="" class="avatar h-40 w-40 b-rd-50%" />
           <div
-            class="msg relative max-w-80% w-fit bg-#2C2C2ECC p-12"
+            v-if="item.content"
+            class="msg relative max-w-80% w-fit w-fit bg-#2C2C2ECC p-12"
             style="border: 1px solid #ffffff1a; border-radius: 0 10px 10px 10px"
-          >
-            {{ item.content }}
-          </div>
+            v-html="md.render(item.content)"
+          ></div>
+          <Loding v-else />
         </div>
         <div
           v-if="item.role === 'user'"
@@ -34,26 +35,41 @@
     </div>
     <div relative pr-22>
       <div
-        v-if="chatState === 1"
+        v-if="chatState === 1 && !chating"
         class="lt-lg:gp-8 absolute top--45 z-1 w-full flex justify-center gap-16"
       >
-        <n-button class="btn w-110 b-rd-10 bg-#9B9B9B33 text-14">
+        <n-button
+          class="btn w-110 cursor-pointer b-rd-10 bg-#9B9B9B33 text-14"
+          @click="regeneration"
+        >
           <TheIcon icon="refresh" color="#fff" type="custom" class="mr-4" />
           重新生成
         </n-button>
-        <n-button class="btn w-110 b-rd-10 bg-#9B9B9B33 text-14" @click="copy">
+        <n-button class="btn w-110 cursor-pointer b-rd-10 bg-#9B9B9B33 text-14" @click="copy('12')">
           <TheIcon icon="copyLink" color="#fff" type="custom" class="mr-4" />
           复制链接
         </n-button>
       </div>
+      <div
+        v-if="chating"
+        class="lt-lg:gp-8 absolute top--45 z-1 w-full flex cursor-pointer justify-center gap-16"
+      >
+        <n-button class="btn w-110 b-rd-10 bg-#9B9B9B33 text-14" @click="stop">
+          <TheIcon icon="del" color="#fff" type="custom" class="mr-4" />
+          停止生成
+        </n-button>
+      </div>
       <n-input
+        v-model:value="questionVal"
         placeholder="在这里输入你的问题"
         size="large"
         autofocus
+        :disabled="chating"
         class="h-45 flex-shrink-0 b-rd-10 bg-#000000 text-#47484D"
+        @keydown.enter="sendMsg(questionVal)"
       >
         <template #suffix>
-          <n-button quaternary @click="addChat">
+          <n-button quaternary :disabled="chating" @click="sendMsg(questionVal)">
             <icon-custom-send size="16"></icon-custom-send>
           </n-button>
         </template>
@@ -65,43 +81,163 @@
 <script setup>
 import { useScroll } from '@/hooks/useScroll'
 import { watch } from 'vue'
+import { useChatStore, useUserStore } from '~/src/store'
+import { copy } from '~/src/utils'
 const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
+import { chat } from '@/utils/http/index'
+import Loding from '@/components/common/ChatLoading/index.vue'
+import { md } from '@/utils/common/markdown'
+import api from '@/api'
+const userInfo = useUserStore()
+const settingConfig = useChatStore()
 
 const props = defineProps({
   data: { type: Object, default: () => {} },
   chatState: { type: Number, default: 2 },
+  chatLinkId: { type: String, default: '' },
 })
-const addChat = () => {
-  scrollToBottom()
+const tokenNum = ref(0.04)
+const decoder = new TextDecoder('utf-8')
+const emits = defineEmits(['changeId', 'getChatList'])
+const chating = ref(false) // 是否正在回答
+const questionVal = ref('')
+const isStopChat = ref(false)
+const system =
+  "你是AIGCOpen社区的ChatGPT助手, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown，回复请使用中文。"
+
+const message = ref(props.data?.messages || [])
+
+const sendMsg = async (msg) => {
+  if (!msg) return
+  chating.value = false
+  isStopChat.value = false
+  try {
+    message.value.push({ role: 'user', content: msg })
+    message.value.push({ role: 'assistant', content: '' })
+    clearMessageContent()
+
+    const tokenRes = await api.getChatToken({ userId: userInfo.userId })
+    const params = {
+      question: msg,
+      history: message.value,
+      system,
+      ...settingConfig.setting,
+      streaming: true,
+      userId: userInfo.userId,
+    }
+    const { body, status } = await chat(tokenRes.sessionToken, params)
+
+    chating.value = true
+
+    if (body) {
+      const reader = body.getReader()
+      await readStream(reader, status)
+      emits('getChatList')
+      const p1 = {
+        0: {
+          json: {
+            userId: userInfo.userId,
+            amount: tokenNum.value,
+            type: 'CHAT_CHATGPT',
+          },
+        },
+        1: {
+          json: {
+            messages: message.value,
+            ...settingConfig.setting,
+            creditUsage: tokenNum.value,
+            promptId: null,
+            live: true,
+          },
+          meta: { values: { promptId: ['undefined'] } },
+        },
+      }
+      const p2 = {
+        0: { json: { userId: userInfo.userId, amount: 0.603, type: 'CHAT_CHATGPT' } },
+        1: { json: { conversationId: props.chatLinkId, messages: message.value } },
+      }
+      const updateRes = props?.chatLinkId
+        ? await api.conversationUpdate({ ...p2 })
+        : await api.conversationCreate({ ...p1 })
+      if (updateRes && updateRes.length) {
+        const chatLinkId = updateRes[1]?.result?.data?.json
+        emits('changeId', chatLinkId)
+        useUserStore().updataMoeny(Number(userInfo.moeny) - Number(tokenNum.value))
+      }
+    }
+  } catch (error) {
+    appendLastMessageContent(error)
+  } finally {
+    chating.value = false
+  }
 }
 
-const copy = () => {
-  // 创建输入框元素
-  const input = document.createElement('input') //不会保留文本格式
-  //如果要保留文本格式，比如保留换行符，或者多行文本，可以使用  textarea 标签，再配和模板字符串 ` `
-  //const input = document.createElement('textarea')
-  // 将想要复制的值
-  input.value = 221
-  // 页面底部追加输入框
-  document.body.appendChild(input)
-  // 选中输入框
-  input.select()
-  // 执行浏览器复制命令
-  document.execCommand('Copy')
-  // 弹出复制成功信息
-  $message.success('复制成功')
-  // 复制后移除输入框
-  input.remove()
+const readStream = async (reader, status) => {
+  let partialLine = ''
+
+  while (true) {
+    if (isStopChat.value) {
+      break
+    }
+    // eslint-disable-next-line no-await-in-loop
+    const { value, done } = await reader.read()
+    if (done) break
+
+    const decodedText = decoder.decode(value, { stream: true })
+
+    if (status !== 200) {
+      const json = JSON.parse(decodedText) // start with "data: "
+      const content = json.error.message ?? decodedText
+      appendLastMessageContent(content)
+      return
+    }
+
+    const chunk = partialLine + decodedText
+    const newLines = chunk.split(/\r?\n/)
+
+    partialLine = newLines.pop() ?? ''
+
+    for (const line of newLines) {
+      if (line.length === 0) continue // ignore empty message
+      if (line.startsWith(':')) continue // ignore sse comment message
+      if (line === 'data: [DONE]') return //
+
+      const json = JSON.parse(line.substring(6)) // start with "data: "
+      const content = status === 200 ? json.choices[0].delta.content ?? '' : json.error.message
+      appendLastMessageContent(content)
+    }
+  }
 }
 
+/* 添加消息 */
+const appendLastMessageContent = (content) =>
+  (message.value[message.value.length - 1].content += content)
+
+const clearMessageContent = () => (questionVal.value = '')
+
+const regeneration = () => {
+  const msg = message.value[message.value.length - 2].content
+  message.value.pop()
+  message.value.pop()
+  sendMsg(msg)
+}
+
+const stop = () => {
+  isStopChat.value = true
+  chating.value = false
+}
+
+watch(message.value, () => nextTick(() => scrollToBottom()), { deep: true })
 watch(
   () => props.data,
   () => {
-    scrollToBottom()
-    console.log('props.data:', props.data)
+    message.value = props.data?.messages || []
   },
   { deep: true }
 )
+watch(questionVal, (val) => {
+  tokenNum.value = Number(parseFloat(val.length / 750).toFixed(2)) + 0.04
+})
 </script>
 
 <style lang="scss" scoped>
@@ -118,6 +254,43 @@ watch(
   &:focus {
     background-color: #9b9b9b33;
     color: #fff;
+  }
+}
+
+:deep(pre) {
+  font-family: -apple-system, 'Noto Sans', 'Helvetica Neue', Helvetica, 'Nimbus Sans L', Arial,
+    'Liberation Sans', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Source Han Sans SC',
+    'Source Han Sans CN', 'Microsoft YaHei', 'Wenquanyi Micro Hei', 'WenQuanYi Zen Hei', 'ST Heiti',
+    SimHei, 'WenQuanYi Zen Hei Sharp', sans-serif;
+  background: rgb(40, 44, 52);
+  color: rgb(171, 178, 191);
+  text-shadow: rgba(0, 0, 0, 0.3) 0px 1px;
+  font-family: Menlo, Monaco, 'Courier New', monospace;
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  line-height: 1.5;
+  tab-size: 2;
+  hyphens: none;
+  padding: 1em;
+  margin: 0px;
+  overflow: auto;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.msg {
+  .edit {
+    display: none;
+  }
+
+  &:hover {
+    .edit {
+      display: block;
+    }
   }
 }
 </style>

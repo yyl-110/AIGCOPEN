@@ -2,8 +2,8 @@
   <div class="header relative h90 w-full flex items-center pl-18">
     <img src="@/assets/images/avatar.png" h62 w62 alt="" class="avatar" />
     <div class="right ml-10">
-      <p class="name text-20 font-700 text-#fff">Mulinmu</p>
-      <p class="info mt-5 text-12 text-#fff">北京 加入时间 2023/08</p>
+      <p class="name text-20 font-700 text-#fff">{{ data.name }}</p>
+      <p class="info mt-5 text-12 text-#fff">北京 加入时间 {{ data.createdAt }}</p>
     </div>
     <div
       class="edit absolute right-5 top-5 cursor-pointer b-rd-20 bg-#1A1B1E px-9 py-4 text-13 text-#fff"
@@ -25,7 +25,7 @@
     class="mt-12 h-50 w-full b-rd-6 text-center text-14 line-height-44 text-#fff"
     style="background-color: rgba(26, 27, 30, 0.5)"
   >
-    努力就会很幸运，做自己
+    {{ data.about }}
   </div>
   <div class="rows w-full">
     <div
@@ -42,7 +42,7 @@
   </div>
   <div class="tagList mt-5 w-full flex flex-wrap lt-sm:max-h-100 lt-sm:overflow-y-auto">
     <div
-      v-for="(item, index) in tagList"
+      v-for="(item, index) in tags"
       :key="index"
       class="item m-5 flex cursor-pointer items-center justify-center b-rd-8 bg-#000000 px-8 py-2 text-#fff"
     >
@@ -53,6 +53,18 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  data: {
+    type: Object,
+    default: () => {},
+  },
+})
+const tags = computed(() => {
+  if (props?.data?.interests) {
+    return props?.data?.interests.split(' ')
+  }
+  return []
+})
 const list = ref([
   { num: 0, title: 'Prompts' },
   { num: 0, title: '我的关注' },

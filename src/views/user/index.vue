@@ -7,12 +7,12 @@
         <div
           class="h-full min-w-280 w-30% b-rd-10 bg-#2C2E33 px-17 pb-20 pt-20 lt-sm:h-auto lt-sm:h-auto lt-sm:w-100%"
         >
-          <info />
+          <info :data="userInfoData" />
         </div>
         <div
           class="ml-25 h-full flex-1 b-rd-10 bg-#25262B66 lt-sm:ml-8 lt-sm:mt-10 lt-sm:h-auto lt-sm:min-h-500"
         >
-          <Tabs />
+          <Tabs :task="task" :user-credit-num="userCreditNum" />
         </div>
       </div>
     </div>
@@ -24,17 +24,24 @@ import api from '~/src/api'
 import info from './components/info.vue'
 import Tabs from './components/tabs.vue'
 import { useUserStore } from '~/src/store'
+const userInfoData = ref({})
+const task = ref({})
 const userInfo = useUserStore()
+document.title = `${userInfo.name} - AIGCOPEN`
 const fetchUserInfo = async () => {
   const params = {
-    0: { json: 10 },
-    1: {
-      json: { followingUserId: null, followedUserId: userInfo.userId },
-      meta: { values: { followingUserId: ['undefined'] } },
-    },
+    0: { json: userInfo.userId },
+    1: { json: { followingUserId: userInfo.userId, followedUserId: userInfo.userId } },
+    2: { json: { userId: userInfo.userId } },
+    3: { json: { userId: userInfo.userId } },
+    4: { json: userInfo.userId },
   }
   const res = await api.getAllUserInfo({ input: JSON.stringify(params) })
-  console.log('res:', res)
+  if (res && res.length) {
+    userInfoData.value = res[0]?.result?.data?.json
+    task.value = res[2]?.result?.data?.json
+    userCreditNum.value = res[3]?.result?.data?.json
+  }
 }
 
 onMounted(() => {

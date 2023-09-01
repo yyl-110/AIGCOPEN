@@ -5,12 +5,23 @@
     :model="formValue"
     :rules="rules"
     :size="'large'"
-    class="flex-1 pb-20 pt-20 lt-sm:mt-10"
+    class="pb-20 pt-20 lt-sm:mt-10"
   >
     <div class="formTop mb-20 pb-20">
       <n-form-item path="desc">
         <template #label>
-          <div class="label">提示词描述</div>
+          <div class="label">
+            提示词描述
+
+            <n-tooltip trigger="hover" placement="bottom-center">
+              <template #trigger>
+                <icon-custom-hint size="12" class="ml-3"></icon-custom-hint>
+              </template>
+              <div max-w-300>
+                要添加模板参数，请使用以下结构｛您的参数名称：您的示例输入｝。输入此输入块后，您将在“提示预览”下看到相应的字段。
+              </div>
+            </n-tooltip>
+          </div>
         </template>
         <n-input
           v-model:value="formValue.desc"
@@ -32,7 +43,7 @@
           <template #trigger>
             <icon-custom-hint size="12" class="ml-3"></icon-custom-hint>
           </template>
-          3242
+          <div max-w-300>要先进行提示词的测试问答，系统将自动生成一个结果，用来提交该提示词</div>
         </n-tooltip>
       </div>
     </div>
@@ -54,7 +65,7 @@
                 <icon-custom-hint size="12" class="ml-3"></icon-custom-hint>
               </div>
             </template>
-            2342423
+            这个名称将显示在你的提示词（Prompt）卡片上，需要简短明了
           </n-tooltip>
         </template>
         <n-input
@@ -118,55 +129,70 @@
 
 <script setup>
 import PresetPhotos from './PresetPhotos.vue'
-const formRef = ref(null)
+const emits = defineEmits(['handelSubmit'])
 const PresetPhotosRef = ref(null)
+const formRef = ref(null)
+const tagsOption = ref([])
+const taskOptions = ref([])
+const Tag = ref([])
 const formValue = ref({
-  name: '',
-  desc: '',
-  tag: [],
-  task: null,
-  range: 'range1',
+  title: '',
+  description: '',
+  Tag: [],
+  bountyId: null,
+  live: true,
 })
 const rules = {
-  name: {
+  title: {
     required: true,
     message: '请输入Prompt名称',
     trigger: 'blur',
   },
-  desc: {
+  // Tag: {
+  //   required: true,
+  //   message: '请输入选择标签',
+  //   trigger: 'input',
+  // },
+  description: {
     required: true,
-    message: '请输入Prompt名称',
-    trigger: 'blur',
-  },
-  tag: {
-    required: true,
-    message: '请至少选择一个标签',
-    trigger: 'blur',
-  },
-  task: {
-    required: true,
-    message: '请至少选择一个标签',
+    message: '请输入提示词描述',
     trigger: 'blur',
   },
 }
-const generalOptions = ['groode', 'veli good', 'emazing', 'lidiculous'].map((v) => ({
-  label: v,
-  value: v,
-}))
 const handleValidateButtonClick = (e) => {
   e.preventDefault()
-  formRef.value?.validate((errors) => {
+  formRef.value?.validate(async (errors) => {
     if (!errors) {
-      message.success('验证成功')
+      emits('handelSubmit', formValue.value)
     } else {
       console.log(errors)
-      message.error('验证失败')
+      $message.error('验证失败')
     }
   })
 }
 const handelClick = () => {
   PresetPhotosRef.value.show()
 }
+const fetchData = async () => {
+  const params = {
+    0: { json: 10 },
+    1: { json: null, meta: { values: ['undefined'] } },
+    2: { json: null, meta: { values: ['undefined'] } },
+  }
+  const res = await api.getFrequentTags({ input: JSON.stringify(params) })
+  if (res && res.length) {
+    tagsOption.value = res[2]?.result?.data?.json.map((i) => {
+      return { value: i.name, label: i.name }
+    })
+    taskOptions.value = res[1]?.result?.data?.json.map((i) => {
+      return { value: i.id, label: i.title }
+    })
+    console.log(' taskOptions.value:', taskOptions.value)
+  }
+}
+onMounted(() => {
+  fetchData()
+})
 </script>
 
 <style lang="scss" scoped>

@@ -1,8 +1,8 @@
 <template>
   <div
     w-full
-    class="card min-h-600 cursor-pointer overflow-hidden b-rd-10 bg-#D9D9D9 hover:bg-#D9D9D999"
-    @click="$router.push(`/collections/detail?id=${cardData.id}`)"
+    class="card cursor-pointer overflow-hidden b-rd-10 bg-#D9D9D9 hover:bg-#D9D9D999"
+    @click="goToDetail"
   >
     <img :src="getUrl(cardData.thumbnailUrl)" class="h-30% w-full" />
     <div class="info px-14 pt-12 lt-sm:px-8">
@@ -14,7 +14,7 @@
       >
         {{ cardData.description }}
       </p>
-      <div class="list w-full b-rd-10 bg-#FFFFFF4D px-10 lt-sm:px-5">
+      <div class="list h-200 w-full b-rd-10 bg-#FFFFFF4D px-10 lt-sm:px-5">
         <div
           v-for="item in cardData.Prompt.slice(0, 4)"
           :key="item.id"
@@ -26,17 +26,19 @@
           </span>
         </div>
       </div>
-      <p
-        v-if="cardData.Prompt.length > 4"
-        class="tip h-34 w-full flex items-center text-12 text-#9B9B9B"
-      >
-        {{ cardData.Prompt.length - 4 }} more prompts +
+      <p class="tip h-34 w-full flex items-center text-12 text-#9B9B9B">
+        <span v-if="cardData.Prompt.length > 4">
+          {{ cardData.Prompt.length - 4 }} more prompts +
+        </span>
       </p>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 const props = defineProps({
   cardData: {
     type: Object,
@@ -50,6 +52,17 @@ const getUrl = (url) => {
   }
   return import.meta.env.VITE_BASE_API + url
 }
+
+const goToDetail = () => {
+  console.log('props.cardData:', props.cardData)
+  const tags = []
+  props.cardData?.Prompt.forEach((item) => {
+    tags.push(item.Tag.map((i) => i.name))
+  })
+  let Tag = tags.reduce((a, b) => a.concat(b))
+  sessionStorage.setItem('TAGS', Tag)
+  router.push(`/collections/detail?id=${props.cardData.id}&userId=${props.cardData.userId}`)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -62,7 +75,6 @@ const getUrl = (url) => {
 
   .list {
     .item {
-      margin-top: 3px;
       position: relative;
 
       &::before {

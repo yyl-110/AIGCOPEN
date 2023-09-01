@@ -10,6 +10,7 @@ import { setupStore } from '@/store'
 import App from './App.vue'
 import { setupNaiveDiscreteApi } from './utils'
 import Login from '@/components/common/login/login'
+import 'highlight.js/styles/dark.css'
 
 async function setupApp() {
   const app = createApp(App)

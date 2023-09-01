@@ -1,33 +1,31 @@
 <template>
   <div
     class="item relative h-122 w-full flex flex-col cursor-pointer b-rd-10 bg-#D3D3D342 px-11 pt-15 hover:bg-#FFFFFF26"
+    @click="goToPrompt"
   >
     <div
-      class="w-full flex items-center pb-12"
+      class="w-full flex items-center overflow-hidden pb-12"
       style="border-bottom: 1px solid rgba(255, 255, 255, 0.15)"
     >
       <div class="imgWrap relative h-60 w-60 flex-shrink-0 overflow-hidden b-rd-10">
-        <img
-          src="https://image.aigcopen.com/48361f42c8967b677957ab2544a0f084.png"
-          class="wh-full"
-        />
+        <img :src="getUrl(data?.thumbnailURL)" class="wh-full" />
       </div>
       <div class="ml-12 flex flex-col">
-        <div class="ellipsis1 text-15 font-500 text-#fff">LAN最好的老师GPT</div>
+        <div class="ellipsis1 text-15 font-500 text-#fff">{{ data?.title }}</div>
         <div class="ellipsis2 mt-2 w-full text-12 text-#CFCFCF">
-          LAN GPT -
-          为学生简化复杂的概念你是否难以理解复杂的概念？无论你是大学生的啊为学生简化复杂的概念你是否难以理解复杂的概念？无论你是大学生的啊
+          {{ data?.description }}
         </div>
       </div>
     </div>
-    <div class="option flex flex-1 items-center justify-between">
-      <div w-full flex items-center>
+    <div class="option flex flex-1 items-center justify-between overflow-hidden">
+      <div v-if="data" w-full flex items-center>
         <div
           v-for="item in iconList"
+          :key="item.key"
           class="option-item mr-10 h-full flex items-center justify-start text-12 font-700 text-[#9B9B9B]"
         >
-          <TheIcon :icon="item" type="custom" class="mr-4 lt-sm:mr-2" />
-          10
+          <TheIcon :icon="item.icon" type="custom" class="mr-4 lt-sm:mr-2" />
+          {{ data[item?.key] }}
         </div>
       </div>
       <div class="name h-full flex items-center">
@@ -42,13 +40,35 @@
     <div
       class="tag absolute right-12 top-7 h-16 b-rd-4 bg-[#FF7C81] px-8 text-center text-12 lh-16 text-#fff"
     >
-      业务发展
+      {{ data?.Tag[0]?.name }}
     </div>
   </div>
 </template>
 
 <script setup>
-const iconList = ref(['fire_o', 'play_o', 'love_o'])
+import { useRouter } from 'vue-router'
+import { getUrl } from '~/src/utils'
+const router = useRouter()
+
+const iconList = ref([
+  { icon: 'fire_o', key: 'popularity' },
+  { icon: 'play_o', key: 'uses' },
+  { icon: 'love_o', key: 'upvotes' },
+])
+const props = defineProps({
+  data: {
+    type: Object,
+    default: () => {},
+  },
+})
+const goToPrompt = () => {
+  router.push({
+    path: '/prompt',
+    query: {
+      promptId: props.data.id,
+    },
+  })
+}
 </script>
 
 <style lang="scss" scoped>

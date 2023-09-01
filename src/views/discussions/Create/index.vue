@@ -1,62 +1,68 @@
 <template>
   <AppPage>
-    <div h-full w-full>
-      <div class="h-full overflow-y-scroll px-39 pt-20 text-#fff lt-sm:px-8 lt-sm:pt-10">
-        <div class="h-90% w-65% flex flex-col lt-sm:h-100% lt-sm:w-100%">
-          <div class="flex cursor-pointer items-center text-14" @click="$router.back()">
-            <TheIcon icon="back" type="custom" class="mr-11 lt-sm:mr-4" />
-            返回讨论区
-          </div>
-          <div class="content mt-18 w-full flex-1 b-rd-10 bg-#25262B66 p-30 lt-sm:mt-9 lt-sm:p-10">
-            <div class="title pl-15 text-18 font-bold lt-sm:ml-7 lt-sm:text-13">创建新的讨论</div>
-            <div class="zt mt-18 lt-sm:mt-9">
-              <n-input
-                v-model:value="themeVal"
-                type="text"
-                size="large"
-                class="b-rd-10 bg-#1B1B1BE0"
-                placeholder="输入讨论主题"
-              />
+    <n-spin :show="loading">
+      <div h-full w-full>
+        <div class="h-full overflow-y-scroll px-39 pt-20 text-#fff lt-sm:px-8 lt-sm:pt-10">
+          <div class="h-90% w-65% flex flex-col lt-sm:h-100% lt-sm:w-100%">
+            <div class="flex cursor-pointer items-center text-14" @click="$router.back()">
+              <TheIcon icon="back" type="custom" class="mr-11 lt-sm:mr-4" />
+              返回讨论区
             </div>
-            <div class="mt-13 overflow-hidden b-rd-10 lt-sm:mt-6">
-              <QuillEditor
-                ref="quillRef"
-                v-model:content="html"
-                content-type="html"
-                :options="quillOptions"
-              />
-            </div>
-            <div class="push mt-38 flex justify-between gap-11 lt-sm:mt-18">
-              <n-select
-                v-model:value="selectVal"
-                size="large"
-                multiple
-                :options="options"
-                placeholder="选择一个话题"
-                class="overflow-hidden b-rd-10 bg-#1B1B1B text-#fff"
-              />
-              <n-button
-                type="primary"
-                size="large"
-                class="btn b-rd-10 text-#fff hover:bg-#1B1B1B"
-                @click="create"
-              >
-                <template #icon>
-                  <TheIcon icon="addFull" type="custom" />
-                </template>
-                创建
-              </n-button>
+            <div
+              class="content mt-18 w-full flex-1 b-rd-10 bg-#25262B66 p-30 lt-sm:mt-9 lt-sm:p-10"
+            >
+              <div class="title pl-15 text-18 font-bold lt-sm:ml-7 lt-sm:text-13">创建新的讨论</div>
+              <div class="zt mt-18 lt-sm:mt-9">
+                <n-input
+                  v-model:value="themeVal"
+                  type="text"
+                  size="large"
+                  class="b-rd-10 bg-#1B1B1BE0"
+                  placeholder="输入讨论主题"
+                />
+              </div>
+              <div class="mt-13 overflow-hidden b-rd-10 lt-sm:mt-6">
+                <QuillEditor
+                  ref="quillRef"
+                  v-model:content="html"
+                  content-type="html"
+                  :options="quillOptions"
+                />
+              </div>
+              <div class="push mt-38 flex justify-between gap-11 lt-sm:mt-18">
+                <n-select
+                  v-model:value="selectVal"
+                  size="large"
+                  :options="options"
+                  placeholder="选择一个话题"
+                  class="overflow-hidden b-rd-10 bg-#1B1B1B text-#fff"
+                />
+                <n-button
+                  type="primary"
+                  size="large"
+                  class="btn b-rd-10 text-#fff hover:bg-#1B1B1B"
+                  @click="create"
+                >
+                  <template #icon>
+                    <TheIcon icon="addFull" type="custom" />
+                  </template>
+                  创建
+                </n-button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </n-spin>
   </AppPage>
 </template>
 
 <script setup>
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import api from '@/api'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const toolbarOptions = [
   ['bold', 'italic', 'underline', 'strike'], // 加粗 斜体 下划线 删除线
@@ -71,21 +77,18 @@ const toolbarOptions = [
   ['link', 'image'], // 链接、图片、视频
 ]
 const themeVal = ref('')
-const options = ref([
-  {
-    label: '学生',
-    value: 0,
-  },
-  {
-    label: '企业经理',
-    value: 1,
-  },
-  {
-    label: '开发人员',
-    value: 2,
-  },
-])
+const options = computed(() => {
+  try {
+    const selectTag = JSON.parse(sessionStorage.getItem('selectTag'))
+    return selectTag.map((i) => {
+      return { ...i, label: i.name, value: i.slug }
+    })
+  } catch (error) {
+    return []
+  }
+})
 const selectVal = ref(null)
+const loading = ref(false)
 const html = ref('')
 const quillRef = ref(null)
 const quillOptions = ref({
@@ -95,8 +98,19 @@ const quillOptions = ref({
   placeholder: '输入内容',
   theme: 'snow',
 })
-const create = () => {
+const create = async () => {
+  loading.value = true
   console.log(html.value, 23424)
+  const params = {
+    0: { json: { title: themeVal.value, description: html.value, category: selectVal.value } },
+  }
+  try {
+    const res = await api.createDiscussion(params)
+    router.go(-1)
+  } catch (error) {
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 

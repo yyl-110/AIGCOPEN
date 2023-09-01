@@ -187,6 +187,9 @@ const handleSave = async (list) => {
   }
 
   const res = await api.updateUserOnboarding(params)
+  if (res && res.length) {
+    useUserStore().updateInterests(res[0]?.result?.data?.json?.interests)
+  }
   selectModalref.value.hide()
   fetchData()
 }
@@ -246,6 +249,7 @@ const updateValue = (val) => {
 
 /* prompt弹框 */
 const goPrompt = (id) => {
+  // router.push({ path: '/prompt', query: { promptId: id } })
   chatModalref.value.show({ id })
 }
 
@@ -256,7 +260,8 @@ onMounted(() => {
   document.querySelector('.cus-scroll-y').addEventListener('scroll', handleScroll)
 })
 onUnmounted(() => {
-  document.querySelector('.cus-scroll-y').removeEventListener('scroll', handleScroll)
+  document.querySelector('.cus-scroll-y') &&
+    document.querySelector('.cus-scroll-y').removeEventListener('scroll', handleScroll)
 })
 </script>
 

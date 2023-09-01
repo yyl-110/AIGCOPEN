@@ -16,7 +16,7 @@
           <icon-custom-edit size="12"></icon-custom-edit>
         </div>
       </div>
-      <n-form-item path="name" class="ml-15 flex-1 pt-20 lt-sm:ml-8">
+      <n-form-item path="title" class="ml-15 flex-1 pt-20 lt-sm:ml-8">
         <template #label>
           <n-tooltip trigger="hover" placement="bottom-center">
             <template #trigger>
@@ -25,57 +25,71 @@
                 <icon-custom-hint size="12" class="ml-3"></icon-custom-hint>
               </div>
             </template>
-            2342423
+            这个名称将显示在你的提示词（Prompt）卡片上，需要简短明了
           </n-tooltip>
         </template>
         <n-input
-          v-model:value="formValue.name"
+          v-model:value="formValue.title"
           placeholder="自动邮件内容生成"
           class="h-full b-rd-10 bg-#1B1B1BE0"
         />
       </n-form-item>
     </div>
-    <n-form-item path="desc">
+    <n-form-item path="description">
       <template #label>
-        <div class="label">提示词描述</div>
+        <n-tooltip trigger="hover" placement="bottom-center">
+          <template #trigger>
+            <div class="label">提示词描述</div>
+          </template>
+          在你的提示词的卡片上展示的描述。一个清晰、信息丰富且引人入胜的描述将有助于使你的提示更加引人注目。
+        </n-tooltip>
       </template>
       <n-input
-        v-model:value="formValue.desc"
+        v-model:value="formValue.description"
         type="textarea"
         placeholder="根据不同工作场景下，创作吸引人、有说服力的邮件正文。邮件内容精简并格式清晰"
         class="h-full b-rd-10 bg-#1B1B1BE0"
       />
     </n-form-item>
-    <n-form-item path="tag">
+    <n-form-item path="Tag">
       <template #label>
         <div class="label">标签</div>
       </template>
       <n-select
-        v-model:value="formValue.tag"
+        v-model:value="Tag"
         placeholder="输入或选择标签"
-        :options="generalOptions"
+        :options="tagsOption"
         multiple
         class="b-rd-10 bg-#1B1B1BE0!important"
       />
     </n-form-item>
-    <n-form-item path="task">
+    <n-form-item path="bountyId">
       <template #label>
-        <div class="label">参与赏金任务</div>
+        <div class="label">参与赏金任务(可选)</div>
       </template>
       <n-select
-        v-model:value="formValue.task"
+        v-model:value="formValue.bountyId"
         placeholder="输入或选择标签"
+        :options="taskOptions"
         class="b-rd-10 bg-#1B1B1BE0 text-16"
       />
     </n-form-item>
     <n-form-item path="radioGroupValue">
       <template #label>
-        <div class="label">可见范围</div>
+        <n-tooltip trigger="hover" placement="bottom-center">
+          <template #trigger>
+            <div class="label flex items-center">
+              可见范围
+              <icon-custom-hint size="12" class="ml-3"></icon-custom-hint>
+            </div>
+          </template>
+          如果设置为私有，其它用户只有通过url链接才可以看到该提示词
+        </n-tooltip>
       </template>
-      <n-radio-group v-model:value="formValue.range" name="radiogroup1">
+      <n-radio-group v-model:value="formValue.live" name="radiogroup1">
         <n-space>
-          <n-radio value="range1">公开</n-radio>
-          <n-radio value="range2">私有</n-radio>
+          <n-radio :value="true">公开</n-radio>
+          <n-radio :value="false">私有</n-radio>
         </n-space>
       </n-radio-group>
     </n-form-item>
@@ -99,56 +113,105 @@
 </template>
 
 <script setup>
+import api from '~/src/api'
 import PresetPhotos from './PresetPhotos.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const props = defineProps({
+  conversationId: { type: String, default: '' },
+  initPrompt: { type: String, default: '' },
+})
 const formRef = ref(null)
 const PresetPhotosRef = ref(null)
+const tagsOption = ref([])
+const taskOptions = ref([])
+const Tag = ref([])
 const formValue = ref({
-  name: '',
-  desc: '',
-  tag: [],
-  task: null,
-  range: 'range1',
+  title: '',
+  description: '',
+  Tag: [],
+  bountyId: null,
+  live: true,
 })
 const rules = {
-  name: {
+  title: {
     required: true,
     message: '请输入Prompt名称',
     trigger: 'blur',
   },
-  desc: {
+  // Tag: {
+  //   required: true,
+  //   message: '请输入选择标签',
+  //   trigger: 'input',
+  // },
+  description: {
     required: true,
-    message: '请输入Prompt名称',
-    trigger: 'blur',
-  },
-  tag: {
-    required: true,
-    message: '请至少选择一个标签',
-    trigger: 'blur',
-  },
-  task: {
-    required: true,
-    message: '请至少选择一个标签',
+    message: '请输入提示词描述',
     trigger: 'blur',
   },
 }
-const generalOptions = ['groode', 'veli good', 'emazing', 'lidiculous'].map((v) => ({
-  label: v,
-  value: v,
-}))
 const handleValidateButtonClick = (e) => {
   e.preventDefault()
-  formRef.value?.validate((errors) => {
+  console.log(formValue.value)
+  formRef.value?.validate(async (errors) => {
     if (!errors) {
-      message.success('验证成功')
+      // $message.success('验证成功')
+      const params = {
+        0: {
+          json: {
+            ...formValue.value,
+            thumbnailURL: '',
+            conversationId: props.conversationId,
+            initPrompt: props.initPrompt,
+            language: 'zh',
+          },
+        },
+      }
+      if (!props.conversationId) {
+        $message.error('你需要先进行问答对话后再创建')
+        return
+      }
+      const res = await api.cretePrompt(params)
+      if (res && res.length) {
+        $message.success('创建成功！')
+        /* 创建成功 */
+        router.push({
+          path: '/prompt',
+          query: {
+            promptId: res[0]?.result?.data?.json,
+          },
+        })
+      }
     } else {
       console.log(errors)
-      message.error('验证失败')
+      $message.error('验证失败')
     }
   })
 }
 const handelClick = () => {
   PresetPhotosRef.value.show()
 }
+const fetchData = async () => {
+  const params = {
+    0: { json: 10 },
+    1: { json: null, meta: { values: ['undefined'] } },
+    2: { json: null, meta: { values: ['undefined'] } },
+  }
+  const res = await api.getFrequentTags({ input: JSON.stringify(params) })
+  if (res && res.length) {
+    tagsOption.value = res[2]?.result?.data?.json.map((i) => {
+      return { value: i.name, label: i.name }
+    })
+    taskOptions.value = res[1]?.result?.data?.json.map((i) => {
+      return { value: i.id, label: i.title }
+    })
+    console.log(' taskOptions.value:', taskOptions.value)
+  }
+}
+onMounted(() => {
+  fetchData()
+})
 </script>
 
 <style lang="scss" scoped>

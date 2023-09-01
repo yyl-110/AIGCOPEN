@@ -24,7 +24,7 @@
       </div>
       <!-- 获得token -->
       <div v-else class="h-full w-full overflow-y-auto px-30 lt-sm:px-10">
-        <Token />
+        <Token :task="task" :user-credit-num="userCreditNum" />
       </div>
       <Empty v-if="false" />
     </div>
@@ -37,6 +37,16 @@ import promptItem from './promptItem.vue'
 import Token from './Token.vue'
 const tabIndex = ref(0)
 const tabs = ref(['我的提示词(Prompts)', '已收藏 Prompts', '点赞 Prompts', '获得token'])
+const props = defineProps({
+  task: {
+    type: Object,
+    default: () => {},
+  },
+  userCreditNum: {
+    type: String,
+    default: '',
+  },
+})
 </script>
 
 <style lang="scss" scoped>

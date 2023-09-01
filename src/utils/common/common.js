@@ -90,8 +90,28 @@ export function useResize(el, cb) {
 }
 
 export const getUrl = (url) => {
+  if (!url) return ''
   if (url.includes('http')) {
     return url
   }
   return import.meta.env.VITE_BASE_API + url
+}
+
+export const copy = (val) => {
+  // 创建输入框元素
+  const input = document.createElement('input') //不会保留文本格式
+  //如果要保留文本格式，比如保留换行符，或者多行文本，可以使用  textarea 标签，再配和模板字符串 ` `
+  //const input = document.createElement('textarea')
+  // 将想要复制的值
+  input.value = val
+  // 页面底部追加输入框
+  document.body.appendChild(input)
+  // 选中输入框
+  input.select()
+  // 执行浏览器复制命令
+  document.execCommand('Copy')
+  // 弹出复制成功信息
+  $message.success('复制成功')
+  // 复制后移除输入框
+  input.remove()
 }

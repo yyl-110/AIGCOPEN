@@ -1,7 +1,7 @@
 <template>
   <div class="box mt-23 w-full b-rd-10 bg-#25262B99 pb-10 pl-23 pt-15 text-#fff lt-sm:p-8">
     <h2 class="text-19 font-700 lt-sm:text-14">当前token余额</h2>
-    <p class="num text-32 font-700 lt-sm:mt-5 lt-sm:text-18">30.8</p>
+    <p class="num text-32 font-700 lt-sm:mt-5 lt-sm:text-18">{{ userInfo?.moeny }}</p>
   </div>
   <div class="task mt-22 w-full lt-sm:mt-10">
     <div class="title flex items-center text-#fff">
@@ -15,15 +15,19 @@
         <img src="@/assets/images/avatar.png" h69 w69 lt-sm:h40 lt-sm:w40 alt="" class="avatar" />
         <div class="ml-12 h-full flex flex-col justify-center text-#fff lt-sm:ml-4">
           <p text-20 font-700 line-height-28 lt-sm:text-14>每日任务</p>
-          <p w-full text-15 lt-sm:text-12 class="ellipsis1">每天登录即可获得50个免费token！</p>
+          <p w-full text-15 lt-sm:text-12 class="ellipsis1">
+            每天登录即可获得{{ userCreditNum }}个免费token！
+          </p>
         </div>
       </div>
       <n-button
         type="info"
         :size="largerThanSm ? 'large' : 'medium'"
         class="btn w-115 b-rd-8 text-#fff lt-sm:w-70 hover:text-#fff"
+        :disabled="task?.userId || !isreceive"
+        @click="handelClaimDailyCredit"
       >
-        认领
+        {{ task?.userId || isreceive ? '完成' : ' 认领' }}
       </n-button>
     </div>
   </div>
@@ -44,9 +48,31 @@
 
 <script setup>
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import api from '~/src/api'
+import { useUserStore } from '~/src/store'
 
+const props = defineProps({
+  task: {
+    type: Object,
+    default: () => {},
+  },
+  userCreditNum: {
+    type: String,
+    default: '',
+  },
+})
+
+const isreceive = ref(false)
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const largerThanSm = breakpoints.greater('sm') // only larger than sm
+const userInfo = useUserStore()
+
+/* 认领 */
+const handelClaimDailyCredit = async () => {
+  const res = await api.claimDailyCredit({ 0: { json: { userId: userInfo.userId } } })
+  $message.success('领取成功')
+  isreceive.value = true
+}
 </script>
 
 <style lang="scss" scoped>
@@ -54,6 +80,7 @@ const largerThanSm = breakpoints.greater('sm') // only larger than sm
   &:hover {
     color: #fff;
   }
+
   &:focus {
     color: #fff;
     background-color: rgba(197, 25, 31, 1);

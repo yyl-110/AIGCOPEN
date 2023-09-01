@@ -22,9 +22,10 @@
       <div class="mt-12 flex justify-between">
         <div
           v-for="(item, index) in channel"
-          :key="item.title"
+          :key="item.type"
           :class="activeChannel === index ? 'active' : ''"
-          class="h-92 w-80 flex flex-col items-center justify-center b-rd-10 bg-#515254 hover:bg-#939394"
+          class="h-92 w-80 flex flex-col cursor-pointer items-center justify-center b-rd-10 bg-#515254 hover:bg-#939394"
+          @click="choseModel(item.type, index)"
         >
           <img :src="item.img" class="h-40 w-40 b-rd-10" alt="" />
           <p class="mt-5 text-16 line-height-23 text-#fff">{{ item.title }}</p>
@@ -50,6 +51,7 @@
           class="mt-8"
           :max="item.max"
           :min="item.min"
+          @update:value="updateData(item.type, sliderList[index].value)"
         ></n-slider>
       </div>
     </div>
@@ -60,6 +62,8 @@
 import chatgpt from '@/assets/images/gpt_logo.png'
 import gpt4 from '@/assets/images/GPT-4.jpeg'
 import Claude from '@/assets/images/Claude.jpeg'
+import { useChatStore } from '~/src/store'
+const settingConfig = useChatStore()
 const showModal = ref(false)
 const setDom = ref(null)
 const activeChannel = ref(0)
@@ -67,28 +71,26 @@ const channel = ref([
   {
     title: 'ChatGPT',
     img: chatgpt,
+    type: 'gpt-3.5-turbo',
   },
   {
     title: 'GPT-4',
     img: gpt4,
+    type: 'gpt-4',
   },
   {
     title: 'Claude',
     img: Claude,
+    type: 'claude-v1',
   },
 ])
-const settingData = ref({
-  temperature: 1,
-  topP: 1,
-  maxTokens: 4096,
-  frequencyPenalty: 2,
-  presencePenalty: 2,
-})
+const settingData = ref(settingConfig.setting)
+console.log('settingData:', settingData.value)
 const sliderList = ref([
   {
     name: 'Temperature',
     step: 0.1,
-    value: 0.7,
+    value: settingData.value['temperature'],
     desc: 'hhhhhh',
     type: 'temperature',
     max: 1,
@@ -98,7 +100,7 @@ const sliderList = ref([
   {
     name: 'Max Tokens',
     step: 1,
-    value: 4096,
+    value: settingData.value['maxTokens'],
     desc: 'hhhhhh',
     type: 'maxTokens',
     max: 4096,
@@ -107,7 +109,7 @@ const sliderList = ref([
   {
     name: 'Frequency Penalty',
     step: 0.1,
-    value: 0,
+    value: settingData.value['frequencyPenalty'],
     desc: 'hhhhhh',
     type: 'frequencyPenalty',
     max: 2,
@@ -116,13 +118,23 @@ const sliderList = ref([
   {
     name: 'Presence Penalty',
     step: 0.1,
-    value: 0,
+    value: settingData.value['presencePenalty'],
     desc: 'hhhhhh',
     type: 'presencePenalty',
     max: 2,
     min: -2,
   },
 ])
+
+const updateData = (type, val) => {
+  settingData.value[type] = val
+  settingConfig.setChatConfig({ ...settingData.value })
+}
+
+const choseModel = (type, index) => {
+  settingConfig.setChatConfig({ ...settingData.value, model: type })
+  activeChannel.value = index
+}
 </script>
 
 <style lang="scss" scoped>

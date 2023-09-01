@@ -11,8 +11,15 @@ axios.defaults.baseURL = import.meta.env.MODE === 'development' ? '' : import.me
 // 请求拦截器
 axios.interceptors.request.use(
   (config) => {
+    const { params: { stream = false } = {} } = config || {}
     if (config.method.toUpperCase() === 'POST') {
-      config.headers['Content-Type'] = 'application/json;charset=utf-8'
+      if (stream) {
+        // config.headers['Content-Type'] = 'text/event-stream;charset=UTF-8'
+        config.headers['Content-Type'] = 'application/json;charset=utf-8'
+        config.responseType = 'stream'
+      } else {
+        config.headers['Content-Type'] = 'application/json;charset=utf-8'
+      }
     }
     return config
   },
@@ -102,4 +109,32 @@ export function getDynamicynamic(url, params) {
         reject(err.data)
       })
   })
+}
+
+/**
+ * gpt 请求
+ * @param {*} params
+ * @param {*} apiKey
+ * @return {*}
+ */
+export async function chat(apiKey, params, url = 'https://test.aigcopen.com/gpt/chat') {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const result = await fetch(url, {
+      method: 'post',
+      // signal: AbortSignal.timeout(8000),
+      // 开启后到达设定时间会中断流式输出
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        ...params,
+        stream: true,
+      }),
+    })
+    return result
+  } catch (error) {
+    throw error
+  }
 }

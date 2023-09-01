@@ -133,3 +133,78 @@ textarea {
     }
   }
 }
+.n-base-icon {
+  color: #fff !important;
+}
+
+/* gpt样式 */
+table {
+  border-color: inherit;
+  text-indent: 0;
+}
+
+table tr th,
+table tr td {
+  border: 1px solid #fff;
+}
+.prose :where(.prose > :first-child):not(:where([class~='not-prose'] *)) {
+  margin-top: 0;
+}
+.prose :where(p):not(:where([class~='not-prose'] *)) {
+  margin-bottom: 1.25em;
+}
+.prose :where(p):not(:where([class~='not-prose'] *)) {
+  margin-top: 1.25em;
+}
+.prose :where(.prose > :first-child):not(:where([class~='not-prose'] *)) {
+  margin-top: 0 !important;
+}
+.prose table {
+  border-collapse: separate;
+  border-spacing: 0px 0px;
+  width: 100%;
+}
+.prose :where(table):not(:where([class~='not-prose'] *)) {
+  font-size: 14px;
+  line-height: 28px;
+  margin-bottom: 32px;
+  margin-top: 2em;
+  table-layout: auto;
+  text-align: left;
+}
+.prose :where(thead):not(:where([class~='not-prose'] *)) {
+  border-bottom-color: #4b5563;
+  border-bottom-width: 1px;
+}
+.prose :where(tbody tr):not(:where([class~='not-prose'] *)) {
+  border-bottom-color: #4b5563;
+  border-bottom-width: 1px;
+}
+.prose th:first-child {
+  border-top-left-radius: 8px;
+}
+.prose th:last-child {
+  border-right-width: 1px;
+  border-top-right-radius: 8px;
+}
+.prose th {
+  background-color: rgba(236, 236, 241, 0.2);
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-top-width: 1px;
+  padding: 4px 12px;
+}
+.prose td {
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  padding: 4px 12px;
+}
+.prose td:last-child {
+  border-right-width: 1px;
+}
+.prose :where(tbody td):not(:where([class~='not-prose'] *)) {
+  vertical-align: baseline;
+}
+.prose :where(tbody tr:last-child):not(:where([class~='not-prose'] *)) {
+  border-bottom-width: 0;
+}

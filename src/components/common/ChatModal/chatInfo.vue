@@ -24,15 +24,31 @@
       </div>
     </div>
     <div class="options mt-20 flex justify-between gap-8 text-#fff lt-lg:mt-10">
-      <n-button class="btn flex-1 b-rd-10 bg-#3C3C3C3D">
-        <TheIcon icon="like" color="#fff" type="custom" class="mr-4" />
-        {{ promptData.upvotes }}
+      <n-button class="btn flex-1 cursor-pointer b-rd-10 bg-#3C3C3C3D" @click="handelUpvotePrompt">
+        <TheIcon v-if="!upvotepromptStatus" icon="like" color="#fff" type="custom" class="mr-4" />
+        <TheIcon v-else icon="like_o" color="red" type="custom" class="mr-4" />
+        {{ promptUpvotesNum }}
       </n-button>
-      <n-button class="btn b-rd-10 bg-#3C3C3C3D" flex-1>
-        <TheIcon icon="star" color="#fff" type="custom" class="mr-4" />
-        {{ promptData.saves }}
+      <n-button class="btn cursor-pointer b-rd-10 bg-#3C3C3C3D" flex-1 @click="handelSavePrompt">
+        <TheIcon
+          v-if="!promptSaveStatus"
+          icon="star"
+          color="#fff"
+          type="custom"
+          size="16"
+          class="mr-4"
+        />
+        <TheIcon
+          v-else
+          icon="star_o"
+          color="rgb(251,191,36)"
+          type="custom"
+          size="16"
+          class="mr-4"
+        />
+        {{ promptSaveNum }}
       </n-button>
-      <n-button class="btn b-rd-10 bg-#3C3C3C3D" flex-1>
+      <n-button class="btn cursor-pointer b-rd-10 bg-#3C3C3C3D" flex-1 @click="showModal = true">
         <TheIcon icon="share1" color="#fff" type="custom" class="mr-4" />
         分享
       </n-button>
@@ -47,10 +63,10 @@
     style="border-bottom: 1px solid #363636"
   >
     <div
-      class="box h-167 w-full flex flex-col justify-between b-rd-10 bg-#1B1B1B70 p-20 text-14 text-#fff lt-lg:h-auto lt-lg:p-10 lt-lg:text-14"
+      class="box min-h-167 w-full flex flex-col justify-between b-rd-10 bg-#1B1B1B70 p-20 text-14 text-#fff lt-lg:h-auto lt-lg:p-10 lt-lg:text-14"
     >
       <span>{{ promptData.description }}</span>
-      <n-space class="lt-lg:mt-20">
+      <n-space class="mt-20 lt-lg:mt-20">
         <n-tag
           v-for="item in promptData.Tag"
           :key="item.id"
@@ -62,7 +78,8 @@
       </n-space>
     </div>
   </div>
-  <div class="coment px-20 lt-lg:px-10">
+  <div class="display-none w-full py-10 text-center lt-sm:display-block">显示评论</div>
+  <div class="coment px-20 lt-sm:display-none lt-lg:px-10">
     <div class="h-60 flex items-center justify-between">
       <span class="text-20 font-700">评论</span>
       <n-select
@@ -80,7 +97,7 @@
         maxRows: 3,
       }"
       placeholder="在这里输入你的评论..."
-      class="w-full"
+      class="w-full b-rd-8"
     />
     <n-button
       class="btn1 mt-14 w-110 b-rd-8 border-none bg-#9B9B9B33 text-#fff"
@@ -111,8 +128,14 @@
               <span>{{ getUpvotes(item.upvotes, item.id) }}</span>
             </div>
             <div class="cursor-pointer">回复</div>
-            <div v-if="item.user.id === userInfo.userId" class="cursor-pointer">编辑</div>
-            <div v-if="item.user.id === userInfo.userId" class="cursor-pointer">删除</div>
+            <div v-if="item.userId === userInfo.userId" class="cursor-pointer">编辑</div>
+            <div
+              v-if="item.userId === userInfo.userId"
+              class="cursor-pointer"
+              @click="del(item.id)"
+            >
+              删除
+            </div>
           </div>
           <template v-if="item.child">
             <div v-for="val in item.child" :key="val.id" class="item my-20 flex">
@@ -143,8 +166,14 @@
                     </span>
                   </div>
                   <div class="cursor-pointer">回复</div>
-                  <div v-if="val.user.id === userInfo.userId" class="cursor-pointer">编辑</div>
-                  <div v-if="val.user.id === userInfo.userId" class="cursor-pointer">删除</div>
+                  <div v-if="val.userId === userInfo.userId" class="cursor-pointer">编辑</div>
+                  <div
+                    v-if="val.userId === userInfo.userId"
+                    class="cursor-pointer"
+                    @click="del(item.id)"
+                  >
+                    删除
+                  </div>
                 </div>
               </div>
             </div>
@@ -153,6 +182,21 @@
       </div>
       <div class="text-center text-14 text-#fff">您已看到所有评论！</div>
     </div>
+    <n-modal
+      v-model:show="showModal"
+      class="h-200 w-500 b-rd-10 bg-#25262B px-10 lt-sm:mx-6 lt-sm:w-full"
+    >
+      <div class="flex items-center">
+        <n-input id="copy" :value="copyLink" type="text" class="w-full b-rd-8" size="large" />
+        <n-button
+          class="btn1 ml-10 w-80 b-rd-8 border-none bg-#9B9B9B33 text-#fff"
+          size="large"
+          @click="copyValue"
+        >
+          复制
+        </n-button>
+      </div>
+    </n-modal>
   </div>
 </template>
 
@@ -160,7 +204,10 @@
 import dayjs from 'dayjs'
 import api from '@/api/index'
 import { useUserStore } from '~/src/store'
+// 导入插件
+import useClipboard from 'vue-clipboard3'
 const userInfo = useUserStore()
+import { copy } from '~/src/utils'
 const props = defineProps({
   promptData: {
     type: Object,
@@ -171,10 +218,15 @@ const props = defineProps({
     default: () => {},
   },
 })
+const promptUpvotesNum = ref(props.promptData?.upvotes || 0)
+const promptSaveNum = ref(props.promptData?.saves || 0)
 const selectVal = ref(null)
 const commontVal = ref('')
 const commentList = ref([])
 const upvoteList = ref([]) // 本地存点赞列表
+const upvotepromptStatus = ref(false)
+const promptSaveStatus = ref(false)
+const showModal = ref(false)
 const options = ref([
   {
     label: '热门评论',
@@ -185,6 +237,22 @@ const options = ref([
     value: 1,
   },
 ])
+
+const copyLink = computed(() => {
+  return `${location.origin}/prompt?promptId=${props.promptId}`
+})
+const copyValue = async () => {
+  const { toClipboard } = useClipboard()
+  try {
+    // 复制
+    await toClipboard(copyLink.value)
+    $message.success('复制成功')
+    // 复制成功
+  } catch (e) {
+    // 复制失败
+  }
+}
+
 const fetchData = async () => {
   const params = { 0: { json: props.promptId } }
   const res = await api.getCommentList({ input: JSON.stringify(params) })
@@ -200,6 +268,29 @@ const fetchData = async () => {
       return i
     })
     commentList.value = lastlist
+    const upvotedData = await api.getUserUpvotedPrompt({
+      input: JSON.stringify({
+        0: { json: { promptId: props.promptId, userId: userInfo.userId } },
+        1: { json: { promptId: props.promptId, userId: userInfo.userId } },
+        2: { json: props.promptId },
+      }),
+    })
+    if (
+      upvotedData[1]?.result?.data?.json &&
+      upvotedData[1]?.result?.data?.json?.userId === userInfo.userId
+    ) {
+      upvotepromptStatus.value = true
+    } else {
+      upvotepromptStatus.value = false
+    }
+    if (
+      upvotedData[0]?.result?.data?.json &&
+      upvotedData[0]?.result?.data?.json?.userId === userInfo.userId
+    ) {
+      promptSaveStatus.value = true
+    } else {
+      promptSaveStatus.value = false
+    }
   }
 }
 const getUrl = (url) => {
@@ -254,6 +345,15 @@ const getUpvotes = (upvotes, id) => {
   }
   return upvotes ? `(${upvotes})` : ''
 }
+
+/* 删除 */
+const del = async (id) => {
+  const res = await api.delComment({ 0: { json: id } })
+  if (res && res.length) {
+    $message.success('删除成功！')
+    fetchData()
+  }
+}
 const getDate = (date) => {
   const now = new Date()
   const day = dayjs(now).diff(date, 'day')
@@ -271,6 +371,30 @@ const getDate = (date) => {
     return minute + '分钟'
   }
   return second + '秒'
+}
+/* prompt点赞 */
+const handelUpvotePrompt = async () => {
+  const res = await api.upvotePrompt({
+    0: { json: { promptId: props.promptId, userId: userInfo.userId } },
+  })
+  if (upvotepromptStatus.value === true) {
+    promptUpvotesNum.value = promptUpvotesNum.value - 1
+  } else {
+    promptUpvotesNum.value = promptUpvotesNum.value + 1
+  }
+  upvotepromptStatus.value = !upvotepromptStatus.value
+}
+/* prompt保存 */
+const handelSavePrompt = async () => {
+  const res = await api.savePrompt({
+    0: { json: { promptId: props.promptId, userId: userInfo.userId } },
+  })
+  if (promptSaveStatus.value === true) {
+    promptSaveNum.value = promptSaveNum.value - 1
+  } else {
+    promptSaveNum.value = promptSaveNum.value + 1
+  }
+  promptSaveStatus.value = !promptSaveStatus.value
 }
 onMounted(() => {
   fetchData()

@@ -2,7 +2,7 @@ import { getToken, refreshAccessToken, isNullOrWhitespace } from '@/utils'
 
 const WHITE_LIST = ['/login', '/404']
 export function createPermissionGuard(router) {
-  router.beforeEach(async (to) => {
+  router.beforeEach(async (to, from) => {
     const token = getToken()
 
     /** 没有token的情况 */
