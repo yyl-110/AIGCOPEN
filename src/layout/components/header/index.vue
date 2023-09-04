@@ -1,6 +1,6 @@
 <template>
   <div flex items-center>
-    <Search v-if="false" />
+    <Search v-if="$route.path !== '/'" />
   </div>
   <div ml-auto flex items-center>
     <template v-if="userId">

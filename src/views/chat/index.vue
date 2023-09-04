@@ -2,44 +2,27 @@
   <AppPage>
     <div h-full overflow-x-hidden>
       <div
-        class="h-98% w-full flex flex-items-start overflow-hidden px-50 pt-40 lt-sm:h-full lt-sm:flex-wrap lt-sm:overflow-y-auto lt-sm:px-10 lt-sm:pt-12"
-      >
+        class="h-98% w-full flex flex-items-start overflow-hidden px-50 pt-40 lt-sm:h-full lt-sm:flex-wrap lt-sm:overflow-y-auto lt-sm:px-10 lt-sm:pt-12">
         <div
-          class="h-full min-w-280 w-30% flex-shrink-0 b-rd-10 bg-#2C2E3399 pb-20 pt-20 lt-sm:h-auto lt-sm:h-auto lt-sm:w-100%"
-        >
-          <div
-            class="inner px-17 pb-16 lt-sm:px-9 lt-sm:pb-8"
-            style="border-bottom: 1px solid #404040"
-          >
+          class="h-full min-w-280 w-30% flex-shrink-0 b-rd-10 bg-#2C2E3399 pb-20 pt-20 lt-sm:h-auto lt-sm:h-auto lt-sm:w-100%">
+          <div class="inner px-17 pb-16 lt-sm:px-9 lt-sm:pb-8" style="border-bottom: 1px solid #404040">
             <div
               class="addChat h-48 w-full flex cursor-pointer items-center justify-center b-rd-10 bg-#1A1B1E text-15 text-#fff hover:bg-#1A1B1ECC lt-sm:text-13"
-              @click="handelNewChat"
-            >
+              @click="handelNewChat">
               <TheIcon icon="addFull" type="custom" size="24" class="mr-6 lt-sm:mr-3" />
               新的对话
             </div>
           </div>
           <!-- prompts -->
-          <Prompts
-            :data="data"
-            :chat-state="chatState"
-            @handelSelect="handelSelect"
-            @handelDel="handelDel"
-          />
+          <Prompts :data="data" :chat-state="chatState" @handelSelect="handelSelect" @handelDel="handelDel" :loading="loading" />
         </div>
         <div
-          class="chat relative ml-23 h-full flex-1 b-rd-10 bg-#25262B66 lt-sm:ml-0 lt-sm:mt-10 lt-sm:h-auto lt-sm:min-h-500"
-        >
+          class="chat relative ml-23 h-full flex-1 b-rd-10 bg-#25262B66 lt-sm:ml-0 lt-sm:mt-10 lt-sm:h-auto lt-sm:min-h-500">
           <img src="@/assets/images/logo_text.png" class="logoText absolute w-348" alt="" />
           <!-- 设置 -->
           <Setting v-if="chatState === 2" />
-          <chatBox
-            :data="chatItem"
-            :chat-state="chatState"
-            :chat-link-id="chatLinkId"
-            @changeId="handelChangeId"
-            @getChatList="handelGetList"
-          />
+          <chatBox :data="chatItem" :chat-state="chatState" :chat-link-id="chatLinkId" @changeId="handelChangeId"
+            @getChatList="handelGetList" />
         </div>
       </div>
     </div>
@@ -58,6 +41,7 @@ const data = ref([])
 const chatItem = ref({})
 const chatState = ref(2) // 1 查看历史 2 新建聊天
 const chatLinkId = ref(null) //当前聊天的id
+const loading = ref(false)
 
 const handelSelect = (id) => {
   chatLinkId.value = id
@@ -72,14 +56,22 @@ const handelDel = (id) => {
 }
 
 const fetchData = async () => {
+  loading.value = true
   const params = {
     0: { json: userInfo.userId },
     1: { json: userInfo.userId },
     2: { json: userInfo.userId },
   }
-  const res = await api.getChatUserInfo({ input: JSON.stringify(params) })
-  if (res && res.length) {
-    data.value = res[1]?.result?.data?.json
+  try {
+    const res = await api.getChatUserInfo({ input: JSON.stringify(params) })
+    if (res && res.length) {
+      data.value = res[1]?.result?.data?.json
+    }
+  } catch (error) {
+    console.log('error:', error)
+
+  } finally {
+    loading.value = false
   }
   console.log('res:', res)
 }

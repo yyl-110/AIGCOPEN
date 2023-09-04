@@ -1107,6 +1107,11 @@
   resolved "https://registry.npmmirror.com/@tsconfig/node16/-/node16-1.0.4.tgz#0b92dcc0cc1c81f6f306a381f28e31b1a56536e9"
   integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
 
+"@types/cookie@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.npmmirror.com/@types/cookie/-/cookie-0.5.1.tgz#b29aa1f91a59f35e29ff8f7cb24faf1a3a750554"
+  integrity sha512-COUnqfB2+ckwXXSFInsFdOAWQzCCx+a5hq2ruyj+Vjund94RJQd4LG2u9hnvJrTgunKAaax7ancBYlDrNYxA0g==
+
 "@types/estree@^1.0.0":
   version "1.0.1"
   resolved "https://registry.npmmirror.com/@types/estree/-/estree-1.0.1.tgz#aa22750962f3bf0e79d753d3cc067f010c95f194"
@@ -1631,6 +1636,16 @@
     quill "^1.3.7"
     quill-delta "^4.2.2"
 
+"@vueuse/core@10.4.1":
+  version "10.4.1"
+  resolved "https://registry.npmmirror.com/@vueuse/core/-/core-10.4.1.tgz#fc2c8a83a571c207aaedbe393b22daa6d35123f2"
+  integrity sha512-DkHIfMIoSIBjMgRRvdIvxsyboRZQmImofLyOHADqiVbQVilP8VVHDhBX2ZqoItOgu7dWa8oXiNnScOdPLhdEXg==
+  dependencies:
+    "@types/web-bluetooth" "^0.0.17"
+    "@vueuse/metadata" "10.4.1"
+    "@vueuse/shared" "10.4.1"
+    vue-demi ">=0.14.5"
+
 "@vueuse/core@^10.3.0":
   version "10.3.0"
   resolved "https://registry.npmmirror.com/@vueuse/core/-/core-10.3.0.tgz#b2dab7821ef206811b925fc935163c38056fd82b"
@@ -1641,15 +1656,36 @@
     "@vueuse/shared" "10.3.0"
     vue-demi ">=0.14.5"
 
+"@vueuse/integrations@^10.4.1":
+  version "10.4.1"
+  resolved "https://registry.npmmirror.com/@vueuse/integrations/-/integrations-10.4.1.tgz#a48356a0bad49f5e724cd9acaebd73d2b66f22a9"
+  integrity sha512-uRBPyG5Lxoh1A/J+boiioPT3ELEAPEo4t8W6Mr4yTKIQBeW/FcbsotZNPr4k9uz+3QEksMmflWloS9wCnypM7g==
+  dependencies:
+    "@vueuse/core" "10.4.1"
+    "@vueuse/shared" "10.4.1"
+    vue-demi ">=0.14.5"
+
 "@vueuse/metadata@10.3.0":
   version "10.3.0"
   resolved "https://registry.npmmirror.com/@vueuse/metadata/-/metadata-10.3.0.tgz#14fe6cc909573785f73a56e4d9351edf3830b796"
   integrity sha512-Ema3YhNOa4swDsV0V7CEY5JXvK19JI/o1szFO1iWxdFg3vhdFtCtSTP26PCvbUpnUtNHBY2wx5y3WDXND5Pvnw==
 
+"@vueuse/metadata@10.4.1":
+  version "10.4.1"
+  resolved "https://registry.npmmirror.com/@vueuse/metadata/-/metadata-10.4.1.tgz#9d2ff5c67abf17a8c07865c2413fbd0e92f7b7d7"
+  integrity sha512-2Sc8X+iVzeuMGHr6O2j4gv/zxvQGGOYETYXEc41h0iZXIRnRbJZGmY/QP8dvzqUelf8vg0p/yEA5VpCEu+WpZg==
+
 "@vueuse/shared@10.3.0":
   version "10.3.0"
   resolved "https://registry.npmmirror.com/@vueuse/shared/-/shared-10.3.0.tgz#ce6b4b6860e14aaa293025dcf0cbe1036a25869f"
   integrity sha512-kGqCTEuFPMK4+fNWy6dUOiYmxGcUbtznMwBZLC1PubidF4VZY05B+Oht7Jh7/6x4VOWGpvu3R37WHi81cKpiqg==
+  dependencies:
+    vue-demi ">=0.14.5"
+
+"@vueuse/shared@10.4.1":
+  version "10.4.1"
+  resolved "https://registry.npmmirror.com/@vueuse/shared/-/shared-10.4.1.tgz#d5ce33033c156efb60664b5d6034d6cd4e2f530c"
+  integrity sha512-vz5hbAM4qA0lDKmcr2y3pPdU+2EVw/yzfRsBdu+6+USGa4PxqSQRYIUC9/NcT06y+ZgaTsyURw2I9qOFaaXHAg==
   dependencies:
     vue-demi ">=0.14.5"
 
@@ -2482,6 +2518,11 @@ conventional-commits-parser@^4.0.0:
     is-text-path "^1.0.1"
     meow "^8.1.2"
     split2 "^3.2.2"
+
+cookie@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.npmmirror.com/cookie/-/cookie-0.5.0.tgz#d1f5d71adec6558c58f389987c366aa47e994f8b"
+  integrity sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==
 
 copy-descriptor@^0.1.0:
   version "0.1.1"
@@ -6631,6 +6672,14 @@ union-value@^1.0.0:
     get-value "^2.0.6"
     is-extendable "^0.1.1"
     set-value "^2.0.1"
+
+universal-cookie@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.npmmirror.com/universal-cookie/-/universal-cookie-6.1.0.tgz#9b631092f77a2b91d1ec153be5e16465ce95b177"
+  integrity sha512-QBpQWkFJyH9D6nP1ZjPuLDdrgYr3y9ti8OTWf6uWcZwtY06de5f10GPYv3v68LIYWU0a9J2ZF5xFR5gOdD5ZaQ==
+  dependencies:
+    "@types/cookie" "^0.5.1"
+    cookie "^0.5.0"
 
 universalify@^2.0.0:
   version "2.0.0"

@@ -27,7 +27,7 @@ import { useUserStore } from '~/src/store'
 const userInfoData = ref({})
 const task = ref({})
 const userInfo = useUserStore()
-document.title = `${userInfo.name} - AIGCOPEN`
+document.title = `${userInfo.name} - ${import.meta.env.VITE_PAGE_TITLE}`
 const fetchUserInfo = async () => {
   const params = {
     0: { json: userInfo.userId },

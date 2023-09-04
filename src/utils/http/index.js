@@ -7,7 +7,7 @@ const message = useMessage()
 
 // 请求超时时间
 axios.defaults.timeout = 10000
-axios.defaults.baseURL = import.meta.env.MODE === 'development' ? '' : import.meta.env.VITE_BASE_API
+axios.defaults.baseURL = import.meta.env.MODE === 'development' ? '/api' : import.meta.env.VITE_BASE_API
 // 请求拦截器
 axios.interceptors.request.use(
   (config) => {
@@ -16,6 +16,7 @@ axios.interceptors.request.use(
       if (stream) {
         // config.headers['Content-Type'] = 'text/event-stream;charset=UTF-8'
         config.headers['Content-Type'] = 'application/json;charset=utf-8'
+
         config.responseType = 'stream'
       } else {
         config.headers['Content-Type'] = 'application/json;charset=utf-8'

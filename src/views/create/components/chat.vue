@@ -286,7 +286,7 @@ const toSend = (index) => {
 }
 
 watch(
-  message.value,
+  () => message.value,
   () =>
     nextTick(() => {
       scrollToBottom()

@@ -40,7 +40,6 @@ const show = (params) => {
 const fetchData = async () => {
   const params = { 0: { json: promptId.value } }
   const res = await api.getPromptsBuyId({ input: JSON.stringify(params) })
-  console.log('res:', res)
   if (res && res.length) {
     promptData.value = res[0]?.result?.data?.json
   }

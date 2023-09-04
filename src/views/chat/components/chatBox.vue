@@ -1,73 +1,62 @@
 <template>
   <div w-full class="h-full flex flex-col px-22 pb-26 pr-0">
-    <div
-      id="scrollRef"
-      ref="scrollRef"
-      class="chat w-full flex flex-col flex-1 overflow-y-auto pr-22"
-    >
+    <div id="scrollRef" ref="scrollRef" class="chat w-full flex flex-col flex-1 overflow-y-auto pr-22">
       <div v-for="(item, index) in message" :key="index" class="message w-full flex flex-col">
-        <div
-          v-if="item.role === 'assistant'"
-          class="left mb-32 mt-4 w-full flex flex-row gap-8 text-#fff"
-        >
+        <div v-if="item.role === 'assistant'" class="left mb-32 mt-4 w-full flex flex-row gap-8 text-#fff">
           <img src="@/assets/images/chatgpt.png" alt="" class="avatar h-40 w-40 b-rd-50%" />
-          <div
-            v-if="item.content"
-            class="msg relative max-w-80% w-fit w-fit bg-#2C2C2ECC p-12"
-            style="border: 1px solid #ffffff1a; border-radius: 0 10px 10px 10px"
-            v-html="md.render(item.content)"
-          ></div>
+          <div v-if="item.content" class="msg relative max-w-80% w-fit w-fit bg-#2C2C2ECC p-12"
+            style="border: 1px solid #ffffff1a; border-radius: 0 10px 10px 10px" v-html="md.render(item.content)"></div>
           <Loding v-else />
         </div>
-        <div
-          v-if="item.role === 'user'"
-          class="right mb-32 mt-4 w-full flex flex-row-reverse gap-8 text-#fff"
-        >
-          <img src="@/assets/images/avatar.png" alt="" class="avatar h-40 w-40 b-rd-50%" />
-          <div
-            class="msg relative max-w-80% w-fit bg-#2C2C2ECC p-12"
-            style="border: 1px solid #ffffff1a; border-radius: 10px 0px 10px 10px"
-          >
-            {{ item.content }}
+        <div v-if="item.role === 'user'" class="right mb-32 mt-4 w-full flex flex-row-reverse gap-8 text-#fff">
+          <img src="../../../assets/images/aigcopen.png" alt="" class="avatar h-40 w-40 b-rd-50%" />
+          <div class="msg relative max-w-80% w-fit flex bg-#2C2C2ECC p-12"
+            style="border: 1px solid #ffffff1a; border-radius: 10px 0 10px 10px">
+
+
+            <div v-if="!messageFlagList[index]?.flag">
+              <div class="innerUser relative wh-full" style="white-space: pre-wrap">
+                {{ item.content }}
+              </div>
+            </div>
+            <!-- 输入框 -->
+            <n-input v-else v-model:value="messageFlagList[index].text" autofocus type="textarea"
+              placeholder="在这里问你的问题。。。" class="w-full bg-transparent min-w-100" />
+            <div class="ml-4 mt-auto flex items-center p-2 relative">
+              <TheIcon icon="edit" color="#fff" type="custom" v-if="!messageFlagList[index]?.flag"
+                class="edit absolute bottom-3 right-3 cursor-pointer" @click="changeChat(index)" />
+              <n-button v-if="messageFlagList[index]?.flag" type="primary"
+                class="btn send ml-4 h-40 w-40 b-rd-10 bg-#2C2C2E text-#fff" @click="toSend(index)">
+                <icon-custom-current size="16"></icon-custom-current>
+              </n-button>
+              <n-button v-if="messageFlagList[index]?.flag" type="primary"
+                class="btn send ml-4 h-40 w-40 b-rd-10 bg-#2C2C2E text-#fff" @click="closeInput(index)">
+                <TheIcon icon="close" size="12" color="#fff" type="custom" />
+              </n-button>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div relative pr-22>
-      <div
-        v-if="chatState === 1 && !chating"
-        class="lt-lg:gp-8 absolute top--45 z-1 w-full flex justify-center gap-16"
-      >
-        <n-button
-          class="btn w-110 cursor-pointer b-rd-10 bg-#9B9B9B33 text-14"
-          @click="regeneration"
-        >
+      <div v-if="chatState === 1 && !chating" class="lt-lg:gp-8 absolute top--45 z-1 w-full flex justify-center gap-16">
+        <n-button class="btn w-110 cursor-pointer b-rd-10 bg-#9B9B9B33 text-14" @click="regeneration">
           <TheIcon icon="refresh" color="#fff" type="custom" class="mr-4" />
           重新生成
         </n-button>
-        <n-button class="btn w-110 cursor-pointer b-rd-10 bg-#9B9B9B33 text-14" @click="copy('12')">
+        <n-button class="btn w-110 cursor-pointer b-rd-10 bg-#9B9B9B33 text-14" @click="copyLink">
           <TheIcon icon="copyLink" color="#fff" type="custom" class="mr-4" />
           复制链接
         </n-button>
       </div>
-      <div
-        v-if="chating"
-        class="lt-lg:gp-8 absolute top--45 z-1 w-full flex cursor-pointer justify-center gap-16"
-      >
+      <div v-if="chating" class="lt-lg:gp-8 absolute top--45 z-1 w-full flex cursor-pointer justify-center gap-16">
         <n-button class="btn w-110 b-rd-10 bg-#9B9B9B33 text-14" @click="stop">
           <TheIcon icon="del" color="#fff" type="custom" class="mr-4" />
           停止生成
         </n-button>
       </div>
-      <n-input
-        v-model:value="questionVal"
-        placeholder="在这里输入你的问题"
-        size="large"
-        autofocus
-        :disabled="chating"
-        class="h-45 flex-shrink-0 b-rd-10 bg-#000000 text-#47484D"
-        @keydown.enter="sendMsg(questionVal)"
-      >
+      <n-input v-model:value="questionVal" placeholder="在这里输入你的问题" size="large" autofocus :disabled="chating"
+        ref="inputRef" class="h-45 flex-shrink-0 b-rd-10 bg-#000000 text-#47484D" @keydown.enter="sendMsg(questionVal)">
         <template #suffix>
           <n-button quaternary :disabled="chating" @click="sendMsg(questionVal)">
             <icon-custom-send size="16"></icon-custom-send>
@@ -92,16 +81,18 @@ const userInfo = useUserStore()
 const settingConfig = useChatStore()
 
 const props = defineProps({
-  data: { type: Object, default: () => {} },
+  data: { type: Object, default: () => { } },
   chatState: { type: Number, default: 2 },
   chatLinkId: { type: String, default: '' },
 })
+const inputRef = ref(null)
 const tokenNum = ref(0.04)
 const decoder = new TextDecoder('utf-8')
 const emits = defineEmits(['changeId', 'getChatList'])
 const chating = ref(false) // 是否正在回答
 const questionVal = ref('')
 const isStopChat = ref(false)
+const messageFlagList = ref([])
 const system =
   "你是AIGCOpen社区的ChatGPT助手, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown，回复请使用中文。"
 
@@ -153,7 +144,7 @@ const sendMsg = async (msg) => {
         },
       }
       const p2 = {
-        0: { json: { userId: userInfo.userId, amount: 0.603, type: 'CHAT_CHATGPT' } },
+        0: { json: { userId: userInfo.userId, amount: tokenNum.value, type: 'CHAT_CHATGPT' } },
         1: { json: { conversationId: props.chatLinkId, messages: message.value } },
       }
       const updateRes = props?.chatLinkId
@@ -227,16 +218,64 @@ const stop = () => {
   chating.value = false
 }
 
-watch(message.value, () => nextTick(() => scrollToBottom()), { deep: true })
+/* 点击修改聊天 */
+const changeChat = (index) => {
+  try {
+    console.log('message.value:', message.value[index]?.content)
+    const text = messageFlagList.value[index]?.text
+    console.log('messageFlagList.value:', messageFlagList.value)
+    messageFlagList.value.splice(index, 1, {
+      flag: true,
+      text: text ? text : message.value[index]?.content,
+    })
+    console.log('messageFlagList.value:', messageFlagList.value)
+  } catch (error) {
+    console.log('error:', error)
+  }
+}
+/* 取消修改 */
+const closeInput = (index) => {
+  try {
+    messageFlagList.value.splice(index, 1, { flag: false, text: '' })
+  } catch (error) {
+    console.log('error:', error)
+  }
+}
+
+/* 重新发送消息 */
+const toSend = (index) => {
+  const msg = messageFlagList.value[index]?.text
+  /* 删除数组 */
+  message.value.splice(index)
+  sendMsg(msg)
+}
+
+const copyLink = () => {
+  const link = `${location.origin}/c?id=${props.chatLinkId}`
+  copy(link)
+}
+
+watch(() => message.value, () => nextTick(() => {
+  scrollToBottom()
+  messageFlagList.value = []
+  messageFlagList.value = message.value.map(() => ({ flag: false, text: '' }))
+}), { deep: true })
 watch(
   () => props.data,
   () => {
+
     message.value = props.data?.messages || []
   },
   { deep: true }
 )
 watch(questionVal, (val) => {
   tokenNum.value = Number(parseFloat(val.length / 750).toFixed(2)) + 0.04
+})
+
+watch(() => props.chatState, (val) => {
+  if (val === 2) {
+    inputRef.value?.focus()
+  }
 })
 </script>
 

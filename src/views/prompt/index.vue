@@ -31,6 +31,7 @@ const fetchData = async () => {
   const res = await api.getPromptsBuyId({ input: JSON.stringify(params) })
   if (res && res.length) {
     promptData.value = res[0]?.result?.data?.json
+    document.title = `${promptData.value.title} | ${import.meta.env.VITE_PAGE_TITLE}`
   }
 }
 

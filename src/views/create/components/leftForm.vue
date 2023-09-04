@@ -129,6 +129,7 @@
 
 <script setup>
 import PresetPhotos from './PresetPhotos.vue'
+import api from '~/src/api'
 const emits = defineEmits(['handelSubmit'])
 const PresetPhotosRef = ref(null)
 const formRef = ref(null)

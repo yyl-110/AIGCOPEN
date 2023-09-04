@@ -30,6 +30,7 @@ export default defineConfig(({ command, mode }) => {
         '/api': {
           target: VITE_BASE_API,
           changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '')
         },
       },
       cors: true,

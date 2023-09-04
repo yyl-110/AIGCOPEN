@@ -3,71 +3,41 @@
     <div class="h-full px-39 pt-37 lt-sm:px-10 lt-sm:pt-10">
       <div class="h-full w-full flex lt-sm:flex-wrap">
         <div
-          class="relative h-88% w-40% flex flex-col overflow-hidden overflow-x-hidden b-rd-10 bg-#25262B66 pb-30 lt-sm:h-300 lt-sm:w-full lt-sm:pb-10"
-        >
+          class="relative h-88% w-40% flex flex-col overflow-hidden overflow-x-hidden b-rd-10 bg-#25262B66 pb-30 lt-sm:h-300 lt-sm:w-full lt-sm:pb-10">
           <img src="@/assets/images/logo_text.png" class="logoText absolute w-240" />
           <div id="scrollRef" ref="scrollRef" class="box flex-1 overflow-y-auto px-20 lt-sm:px-5">
             <!-- 聊天 -->
             <div v-for="(item, index) in message" :key="index" class="message w-full flex flex-col">
-              <div
-                v-if="item.role === 'assistant'"
-                class="left mb-32 mt-4 w-full flex flex-row gap-8 text-#fff"
-              >
+              <div v-if="item.role === 'assistant'" class="left mb-32 mt-4 w-full flex flex-row gap-8 text-#fff">
                 <img src="@/assets/images/chatgpt.png" alt="" class="avatar h-40 w-40 b-rd-50%" />
-                <div
-                  v-if="item.content"
-                  class="msg relative max-w-80% w-fit w-fit bg-#2C2C2ECC p-12"
-                  style="border: 1px solid #ffffff1a; border-radius: 0 10px 10px 10px"
-                  v-html="md.render(item.content)"
-                ></div>
+                <div v-if="item.content" class="msg relative max-w-80% w-fit w-fit bg-#2C2C2ECC p-12"
+                  style="border: 1px solid #ffffff1a; border-radius: 0 10px 10px 10px" v-html="md.render(item.content)">
+                </div>
                 <Loding v-else />
               </div>
-              <div
-                v-if="item.role === 'user'"
-                class="right mb-32 mt-4 w-full flex flex-row-reverse gap-8 text-#fff"
-              >
-                <img src="@/assets/images/avatar.png" alt="" class="avatar h-40 w-40 b-rd-50%" />
-                <div
-                  class="msg relative max-w-80% w-fit flex bg-#2C2C2ECC p-12"
-                  style="border: 1px solid #ffffff1a; border-radius: 10px 0 10px 10px"
-                >
+              <div v-if="item.role === 'user'" class="right mb-32 mt-4 w-full flex flex-row-reverse gap-8 text-#fff">
+                <img src="../../assets/images/aigcopen.png" alt="" class="avatar h-40 w-40 b-rd-50%" />
+                <div class="msg relative max-w-80% w-fit flex bg-#2C2C2ECC p-12"
+                  style="border: 1px solid #ffffff1a; border-radius: 10px 0 10px 10px">
                   <div v-if="!messageFlagList[index]?.flag">
-                    <div class="overflow-x-scroll" style="white-space: pre-wrap">
+                    <div class="overflow-x-scroll min-w-80" style="white-space: pre-wrap">
                       {{ item.content }}
                     </div>
                   </div>
                   <!-- 输入框 -->
-                  <n-input
-                    v-else
-                    v-model:value="messageFlagList[index].text"
-                    autofocus
-                    type="textarea"
-                    placeholder="在这里问你的问题。。。"
-                    class="w-full bg-transparent"
-                  />
+                  <n-input v-else v-model:value="messageFlagList[index].text" autofocus type="textarea"
+                    placeholder="在这里问你的问题。。。" class="w-full bg-transparent min-w-80" />
                   <div class="ml-4 mt-auto flex items-center p-2">
-                    <n-button
-                      v-if="!messageFlagList[index]?.flag"
-                      type="primary"
-                      class="btn send h-40 w-40 b-rd-10 bg-#2C2C2E text-#fff"
-                      @click="changeChat(index)"
-                    >
+                    <n-button v-if="!messageFlagList[index]?.flag" type="primary"
+                      class="btn send h-40 w-40 b-rd-10 bg-#2C2C2E text-#fff" @click="changeChat(index)">
                       <icon-custom-edit size="16"></icon-custom-edit>
                     </n-button>
-                    <n-button
-                      v-if="messageFlagList[index]?.flag"
-                      type="primary"
-                      class="btn send ml-4 h-40 w-40 b-rd-10 bg-#2C2C2E text-#fff"
-                      @click="toSend(index)"
-                    >
+                    <n-button v-if="messageFlagList[index]?.flag" type="primary"
+                      class="btn send ml-4 h-40 w-40 b-rd-10 bg-#2C2C2E text-#fff" @click="toSend(index)">
                       <icon-custom-current size="16"></icon-custom-current>
                     </n-button>
-                    <n-button
-                      v-if="messageFlagList[index]?.flag"
-                      type="primary"
-                      class="btn send ml-4 h-40 w-40 b-rd-10 bg-#2C2C2E text-#fff"
-                      @click="closeInput(index)"
-                    >
+                    <n-button v-if="messageFlagList[index]?.flag" type="primary"
+                      class="btn send ml-4 h-40 w-40 b-rd-10 bg-#2C2C2E text-#fff" @click="closeInput(index)">
                       <TheIcon icon="close" size="16" color="#fff" type="custom" />
                     </n-button>
                   </div>
@@ -77,19 +47,12 @@
           </div>
           <div class="bottom relative flex-shrink-0 justify-center px-20" style="overflow: initial">
             <div class="lt-lg:gp-8 absolute top--45 z-1 flex gap-16">
-              <n-button
-                v-if="!chating"
-                class="btn w-110 cursor-pointer b-rd-10 bg-#9B9B9B33 text-14"
-                @click="clear"
-              >
+              <n-button v-if="!chating" class="btn w-110 cursor-pointer b-rd-10 bg-#9B9B9B33 text-14" @click="clear">
                 <TheIcon icon="del" color="#fff" type="custom" class="mr-4" />
                 清除
               </n-button>
-              <n-button
-                v-if="!chating && message.length"
-                class="btn w-110 cursor-pointer b-rd-10 bg-#9B9B9B33 text-14"
-                @click="regeneration"
-              >
+              <n-button v-if="!chating && message.length" class="btn w-110 cursor-pointer b-rd-10 bg-#9B9B9B33 text-14"
+                @click="regeneration">
                 <TheIcon icon="refresh" color="#fff" type="custom" class="mr-4" />
                 重新生成
               </n-button>
@@ -98,30 +61,18 @@
                 停止生成
               </n-button>
             </div>
-            <n-input
-              v-model:value="questionVal"
-              placeholder="在这里输入你的问题"
-              size="large"
-              autofocus
-              :disabled="chating"
-              class="h-45 flex-shrink-0 b-rd-10 bg-#000000 text-#47484D"
-              @keydown.enter="sendMsg(questionVal)"
-            >
+            <n-input v-model:value="questionVal" placeholder="在这里输入你的问题" size="large" autofocus :disabled="chating"
+              class="h-45 flex-shrink-0 b-rd-10 bg-#000000 text-#47484D" @keydown.enter="sendMsg(questionVal)">
               <template #suffix>
-                <n-button
-                  type="primary"
-                  class="btn send h-full w-98 b-rd-r-10 bg-#2C2C2E text-center text-#fff"
-                  :disabled="chating"
-                  @click="sendMsg(questionVal)"
-                >
+                <n-button type="primary" class="btn send h-full w-98 b-rd-r-10 bg-#2C2C2E text-center text-#fff"
+                  :disabled="chating" @click="sendMsg(questionVal)">
                   发送
                   <icon-custom-send size="16" ml-6></icon-custom-send>
                 </n-button>
               </template>
             </n-input>
             <div
-              class="absolute bottom--16 right-20 ml-auto mt-1 flex flex-row items-center gap-1 text-right text-xs space-x-1"
-            >
+              class="absolute bottom--16 right-20 ml-auto mt-1 flex flex-row items-center gap-1 text-right text-xs space-x-1">
               <n-tooltip trigger="hover" placement="bottom-center">
                 <template #trigger>
                   <div class="label flex items-center">
@@ -136,16 +87,11 @@
             </div>
           </div>
         </div>
-        <div
-          class="ml-23 h-95% flex-1 overflow-y-auto b-rd-10 bg-#2C2E3399 lt-sm:ml-10 lt-sm:h-auto lt-sm:w-100%"
-        >
+        <div class="ml-23 h-95% flex-1 overflow-y-auto b-rd-10 bg-#2C2E3399 lt-sm:ml-10 lt-sm:h-auto lt-sm:w-100%">
           <div class="wh-full flex flex-col p-20 lt-sm:p-10">
-            <img
-              src="@/assets/images/banner.png"
-              class="logo_img h-125 w-full flex-shrink-0 b-rd-10"
-              alt=""
-            />
-            <rightForm :conversation-id="conversationId" :init-prompt="message[0]?.content" />
+            <img src="@/assets/images/banner.png" class="logo_img h-125 w-full flex-shrink-0 b-rd-10" alt="" />
+            <rightForm :conversation-id="conversationId" :init-prompt="message[0]?.content"
+              :initPromptData="initPromptData" />
           </div>
         </div>
       </div>
@@ -163,6 +109,8 @@ const userInfo = useUserStore()
 import { chat } from '@/utils/http/index'
 const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
 import { md } from '@/utils/common/markdown'
+import { useRoute } from 'vue-router'
+const route = useRoute()
 
 const conversationId = ref('') // 聊天id
 const messageFlagList = ref([])
@@ -172,6 +120,8 @@ const decoder = new TextDecoder('utf-8')
 const chating = ref(false) // 是否正在回答
 const questionVal = ref('')
 const isStopChat = ref(false)
+/* 编辑数据 */
+const initPromptData = ref('')
 const system =
   "你是AIGCOpen社区的ChatGPT助手, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown，回复请使用中文。"
 
@@ -292,7 +242,8 @@ const clear = () => {
 /* 点击修改聊天 */
 const changeChat = (index) => {
   try {
-    const text = messageFlagList.value[index].text
+    console.log('message.value:', message.value[index]?.content)
+    const text = messageFlagList.value[index]?.text
     messageFlagList.value.splice(index, 1, {
       flag: true,
       text: text ? text : message.value[index]?.content,
@@ -319,11 +270,12 @@ const toSend = (index) => {
 }
 
 watch(
-  message.value,
+  () => message.value,
   () =>
     nextTick(() => {
       scrollToBottom()
       messageFlagList.value = message.value.map(() => ({ flag: false, text: '' }))
+      console.log('messageFlagList.value:', messageFlagList.value)
     }),
   { deep: true }
 )
@@ -336,6 +288,22 @@ watch(questionVal, (val) => {
     tokenNum.value = 0.01
   } else {
     tokenNum.value = Number(parseFloat(val.length / 750)).toFixed(2)
+  }
+})
+/* 获取编辑数据 */
+const getEditData = async () => {
+  if (route.query.promptId) {
+    const res = await api.getEditPromptData({ id: route.query.promptId })
+    if (res && res.pageProps) {
+      message.value = res?.pageProps?.initMessages
+      conversationId.value = res?.pageProps?.promptData?.conversationId
+      initPromptData.value = res?.pageProps?.promptData
+    }
+  }
+}
+onMounted(() => {
+  if (route.query.promptId) {
+    getEditData()
   }
 })
 </script>
