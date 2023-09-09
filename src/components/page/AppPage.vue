@@ -16,3 +16,13 @@ defineProps({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+@media (max-width: 639.9px) {
+  section {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+</style>

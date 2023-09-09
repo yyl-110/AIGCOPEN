@@ -10,12 +10,20 @@
         <!--  -->
         <div v-if="!isExtend && !chatFlag" class="mb-64 mt-36 h-full w-full flex flex-row-reverse gap-19 lt-sm:gap-8">
           <img src="@/assets/images/chatgpt.png" class="h-40 w-40 flex-shrink-0 b-rd-50%" alt="" />
-          <div class="msg h-fit w-full flex-1 rounded-xl p-6 lg:max-w-[65%]">
+          <div class="msg h-fit w-full flex-1 rounded-xl p-6 lg:max-w-[80%]">
             <div class="relative">
+              <div class="msgBox px-15" v-if="Array.isArray(ArrMsg)">
+                <div class="px-10 py-15">
+                  <div class="item mb-15" v-for="(item, index) in ArrMsg" :key="index">
+                    <div class="label mb-10">{{ item[0] }}</div>
+                    <n-input type="text" v-model:value="ArrMsg[index][1]" class="h-40 b-rd-10"></n-input>
+                  </div>
+                </div>
+              </div>
               <n-input v-model:value="textVal" autofocus type="textarea" :autosize="{
                 minRows: 3,
                 maxRows: 10,
-              }" placeholder="在这里问你的问题。。。" class="w-full bg-transparent" />
+              }" placeholder="在这里问你的问题。。。" class="w-full bg-transparent" v-else />
               <div class="absolute right-0 mt-16 flex flex-row">
                 <div class="w-fit flex flex-col items-center space-y-4">
                   <n-button type="primary" size="large" class="send w-110 b-rd-10 bg-#2C2C2E text-#fff"
@@ -46,13 +54,13 @@
           class="message w-full flex flex-col">
           <div v-if="item.role === 'assistant'" class="left mb-32 mt-4 w-full flex flex-row gap-19 text-#fff">
             <img src="@/assets/images/chatgpt.png" alt="" class="avatar h-40 w-40 b-rd-50%" />
-            <div v-if="item.content" class="msg prose relative max-w-80% w-fit w-fit bg-#2C2C2ECC p-12"
+            <div v-if="item.content" class="msg prose relative max-w-80% w-fit w-fit bg-#2C2C2ECC p-12 lt-sm:w-100%"
               style="border: 1px solid #ffffff1a; border-radius: 0 10px 10px 10px" v-html="md.render(item.content)"></div>
             <Loding v-else />
           </div>
           <div v-if="item.role === 'user'" class="right mb-32 mt-4 w-full flex flex-row-reverse gap-8 text-#fff">
             <img src="../../../assets/images/aigcopen.png" alt="" class="avatar h-40 w-40 b-rd-50%" />
-            <div class="msg relative max-w-80% w-fit flex bg-#2C2C2ECC p-12"
+            <div class="msg relative max-w-80% w-fit flex bg-#2C2C2ECC p-12 lt-sm:w-100%"
               style="border: 1px solid #ffffff1a; border-radius: 10px 0 10px 10px">
 
               <!-- 展开查看模板 -->
@@ -136,6 +144,7 @@
 </template>
 
 <script setup>
+import { getCurrentInstance } from 'vue'
 import { useUserStore } from '~/src/store'
 import { useScroll } from '@/hooks/useScroll'
 import { chat } from '@/utils/http/index'
@@ -148,6 +157,7 @@ import { markedRender } from '@/utils/common/highlight'
 
 import api from '@/api'
 import { getUrl } from '~/src/utils'
+const { proxy } = getCurrentInstance()
 const props = defineProps({
   promptData: {
     type: Object,
@@ -167,17 +177,36 @@ const isTalking = ref(false)
 const sampleMsg = ref(props.promptData?.Conversation?.messages)
 const qustionVal = ref('')
 const textVal = ref(props.promptData?.initPrompt || '')
+const ArrMsg = ref('');
 const stopChat = ref(false) // 停止
 const chatLinkId = ref(null)
 const consumeToken = ref(0.0) // 消耗token
 const messageFlagList = ref([])
 
-const sendMsg = async (msg) => {
+const sendMsg = async (_message) => {
+  if (!userInfo.userId) {
+    proxy.$Login({})
+    return
+  }
+  let msg = _message
   if (!msg) {
     return
   }
+  if (ArrMsg.value.length) {
+    let arr = ArrMsg.value.map(i => {
+      return `${i.join('：')}`
+    })
+    console.log('ArrMsg.value:', arr)
+    for (var i = 0; i < arr.length; i++) {
+      msg = msg.replace(/\{.*?\}/, arr[i]);
+    }
+    console.log('msg:', msg)
+  }
   stopChat.value = false
   try {
+    if (textVal.value) {
+      chatFlag.value = true
+    }
     isTalking.value = true
     message.value.push({ role: 'user', content: msg })
     clearMessageContent()
@@ -198,9 +227,6 @@ const sendMsg = async (msg) => {
     const { body, status } = await chat(tokenRes.sessionToken, params)
 
     stopChat.value = true
-    if (textVal.value) {
-      chatFlag.value = true
-    }
 
     if (body) {
       const reader = body.getReader()
@@ -235,6 +261,7 @@ const sendMsg = async (msg) => {
       useUserStore().updataMoeny(Number(userInfo.moeny) - Number(consumeToken.value))
       stopChat.value = false
       textVal.value = ''
+      ArrMsg.value = ''
     }
   } catch (error) {
     appendLastMessageContent(error)
@@ -288,8 +315,13 @@ const readStream = async (reader, status) => {
 }
 
 /* 添加消息 */
-const appendLastMessageContent = (content) =>
-  (message.value[message.value.length - 1].content += content)
+const appendLastMessageContent = (content) => {
+  try {
+    message.value[message.value.length - 1].content += content
+  } catch (error) {
+    console.log('error:', error)
+  }
+}
 
 const clearMessageContent = () => (qustionVal.value = '')
 
@@ -371,6 +403,16 @@ watch(
 )
 watch(textVal, (val) => {
   if (val) {
+    try {
+      const pattern = /(?<=\{)(.+?)(?=\})/g;
+      let ArrVal = val.match(pattern);
+      ArrVal = ArrVal.map(i => i.split(':'));
+      if (Array.isArray(ArrVal)) {
+        ArrMsg.value = ArrVal;
+      }
+    } catch (error) {
+      ArrMsg.value = ""
+    }
     consumeToken.value = (Number(textVal.value.length) / 750).toFixed(2)
   }
 }, { immediate: true })

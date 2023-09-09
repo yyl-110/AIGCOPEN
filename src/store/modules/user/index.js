@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { resetRouter } from '@/router'
-import { useTagsStore, usePermissionStore } from '@/store'
+import { usePermissionStore } from '@/store'
 import { removeToken, toLogin } from '@/utils'
 import api from '@/api'
 
@@ -39,7 +39,12 @@ export const useUserStore = defineStore('user', {
         const res = await api.session()
         const { id, name, image, role } = res?.user || {}
         const userParams = { 0: { json: id }, 1: { json: id } }
-        if (!id) return
+        if (!id) {
+          localStorage.removeItem('userId')
+          this.userInfo = {}
+          // window.location.reload()
+          return
+        }
         const resUser = await api.getUserProfile({
           batch: 1,
           input: JSON.stringify(userParams),
@@ -79,16 +84,13 @@ export const useUserStore = defineStore('user', {
       this.userInfo.interests = interests
     },
     async logout() {
-      const { resetTags } = useTagsStore()
       const { resetPermission } = usePermissionStore()
-      // removeToken()
-      // resetTags()
       resetPermission()
       resetRouter()
       localStorage.removeItem('userId')
+      this.userInfo = {}
       this.$reset()
       window.location.href = '/'
-      // toLogin()
     },
     setUserInfo(userInfo = {}) {
       this.userInfo = { ...this.userInfo, ...userInfo }

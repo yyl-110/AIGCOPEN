@@ -1,18 +1,17 @@
 <template>
   <n-modal v-model:show="showModal">
-    <div class="w-80% text-#fff lt-sm:w-90%">
+    <div class="w-80% text-#fff lt-sm:w-100%">
+      <TheIcon icon="close" type="custom" :size="14" class="fixed top-12 right-12 display-none lt-sm:display-block" @click="showModal = false" />
       <n-grid cols="5 s:1 m:5 l:5 xl:5 2xl:5" responsive="screen" item-responsive>
         <n-grid-item span="5 s:5 m:2 l:2 xl:2 2xl:2">
           <div
-            class="info h-700 w-full overflow-y-auto b-rd-l-20 bg-#25262B pb-49 lt-lg:h-auto lt-lg:b-rd-b-0 lt-lg:b-rd-t-10"
-          >
+            class="info h-700 w-full overflow-y-auto b-rd-l-20 bg-#25262B pb-49 lt-lg:h-auto lt-lg:b-rd-b-0 lt-lg:b-rd-t-10">
             <chatInfo :prompt-data="promptData" :prompt-id="promptId" />
           </div>
         </n-grid-item>
         <n-grid-item span="5 s:5 m:3 l:3 xl:3 2xl:3">
           <div
-            class="chat h-700 w-full overflow-hidden overflow-y-auto b-rd-r-20 bg-#25262BCC lt-lg:h-auto lt-lg:b-rd-b-10 lt-lg:b-rd-t-0"
-          >
+            class="chat h-700 w-full overflow-hidden overflow-y-auto b-rd-r-20 bg-#25262BCC lt-lg:h-auto lt-lg:b-rd-b-10 lt-lg:b-rd-t-0">
             <chatBox :prompt-data="promptData" :prompt-id="promptId" />
           </div>
         </n-grid-item>

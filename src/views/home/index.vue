@@ -2,32 +2,24 @@
   <AppPage :show-footer="true">
     <div flex-1>
       <Header :search-value="searchValue" @updateValue="updateValue" />
-      <div class="mt-30 w-full flex flex-wrap flex-items-center px-50 lt-sm:mt-20 lt-sm:px-20">
-        <div
-          v-for="(item, index) in tagList.slice(0, 9)"
-          :key="index"
-          :class="activeTag === item ? 'active' : ''"
+      <div class="mt-30 w-full flex flex-wrap flex-items-center px-50 lt-sm:mt-20 lt-sm:px-10">
+        <div v-for="(item, index) in tagList.slice(0, 9)" :key="index" :class="activeTag === item ? 'active' : ''"
           class="item ml-7 mt-7 cursor-pointer border-1 border-#434343 b-rd-30 border-solid bg-#434343 px-18 py-10 text-16 text-#CACACA lt-sm:px-9 lt-sm:py-5 lt-sm:text-14"
-          @click="getTag(item)"
-        >
+          @click="getTag(item)">
           {{ item }}
         </div>
         <icon-custom-add class="ml-6 mt-7 cursor-pointer" @click="add"></icon-custom-add>
       </div>
       <!-- filter -->
-      <div class="mt-18 flex flex-wrap px-50 filter lt-sm:mt-10 lt-sm:px-20">
-        <div
-          v-for="(item, index) in screenList"
-          :key="index"
-          :class="item.type === activeScreen ? 'active' : ''"
+      <div class="mt-18 flex flex-wrap px-50 filter lt-sm:mt-10 lt-sm:px-10">
+        <div v-for="(item, index) in screenList" :key="index" :class="item.type === activeScreen ? 'active' : ''"
           class="screenItem ml-8 mt-9 flex cursor-pointer justify-center flex-items-center b-rd-8 bg-#000000 px-20 py-9 text-16 text-#CACACA lt-sm:ml-4 hover:bg-#C5191F lt-sm:px-10 lt-sm:py-4 lt-sm:text-14 hover:text-#fff"
-          @click="getFilter(item)"
-        >
+          @click="getFilter(item)">
           <TheIcon :icon="item.icon" type="custom" class="mr-9 lt-sm:mr-4" />
           <span>{{ item.title }}</span>
         </div>
       </div>
-      <div class="chatList mt-39 w-full px-50 lt-sm:mt-20 lt-sm:px-20">
+      <div class="chatList mt-39 w-full px-50 lt-sm:mt-20 lt-sm:px-10">
         <n-grid cols="2 s:3 m:4 l:4 xl:4 2xl:5" :x-gap="16" :y-gap="12" responsive="screen">
           <n-grid-item v-for="item in cardList" :key="item.id">
             <card-item :card-item-data="item" @click="goPrompt(item.id)" />
@@ -54,6 +46,8 @@ import chatModal from '@/components/common/ChatModal/ChatModal.vue'
 import { useRoute, useRouter } from 'vue-router'
 import Loading from '@/components/common/Loading/index.vue'
 import api from '@/api'
+import { getCurrentInstance } from 'vue'
+const { proxy } = getCurrentInstance()
 const route = useRoute()
 const router = useRouter()
 
@@ -173,6 +167,10 @@ const handleGetPrompts = async () => {
 }
 /* 保存 */
 const handleSave = async (list) => {
+  if (!userStore.userId) {
+    proxy.$Login({})
+    return
+  }
   const params = {
     0: {
       json: {

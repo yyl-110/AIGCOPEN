@@ -1,17 +1,9 @@
 <template>
   <n-modal v-model:show="showModal">
-    <n-card
-      style="background-color: #fff; color: #000"
-      class="relative w-654"
-      :bordered="false"
-      size="huge"
-      role="dialog"
-      aria-modal="true"
-    >
-      <icon-custom-close
-        class="absolute right-30 top-30 h-16 w-16 cursor-pointer"
-        @click="showModal = false"
-      ></icon-custom-close>
+    <n-card style="background-color: #fff; color: #000" class="relative w-654" :bordered="false" size="huge" role="dialog"
+      aria-modal="true">
+      <icon-custom-close class="absolute right-30 top-30 h-16 w-16 cursor-pointer"
+        @click="showModal = false"></icon-custom-close>
       <template #header>
         <div class="flex items-center px-24 py-30 text-#000">
           <img src="@/assets/images/selfSet.png" mr-6 h-29 w-29 alt="" />
@@ -21,13 +13,9 @@
       <div class="content h-616 wh-full bg-#F9F9F9 px-16 pt-12 lt-sm:h-300">
         <div class="inner wh-full overflow-y-auto">
           <div class="tagList flex flex-wrap">
-            <div
-              v-for="(item, index) in tagList"
-              :key="index"
-              :class="item.select ? 'active' : ''"
+            <div v-for="(item, index) in tagList" :key="index" :class="item.select ? 'active' : ''"
               class="item m-5 flex cursor-pointer items-center justify-center b-rd-8 bg-#CACACA px-16 py-8 text-#000 hover:bg-#000 hover:text-#fff"
-              @click="handleSelect(item, index)"
-            >
+              @click="handleSelect(item, index)">
               <TheIcon v-if="item.select" icon="current" type="custom" class="mr-5" />
               <TheIcon v-else icon="choose" type="custom" class="mr-5" />
               {{ item.name }}
@@ -37,10 +25,8 @@
       </div>
       <template #footer>
         <div class="flex items-center">
-          <div
-            class="save h-38 w-90 flex cursor-pointer items-center justify-center b-rd-5 bg-#C5191F text-15 text-#fff"
-            @click="handleSave"
-          >
+          <div class="save h-38 w-90 flex cursor-pointer items-center justify-center b-rd-5 bg-#C5191F text-15 text-#fff"
+            @click="handleSave">
             保存
           </div>
           <span class="ml-13 cursor-pointer text-14 text-#000" @click="showModal = false">
@@ -57,7 +43,7 @@ const showModal = ref(false)
 const props = defineProps({
   selectData: {
     type: Array,
-    default: () => {},
+    default: () => { },
   },
 })
 const emits = defineEmits(['handleSave'])
@@ -98,7 +84,7 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-.n-card > :deep(.n-card-header) {
+.n-card> :deep(.n-card-header) {
   padding: 0 !important;
 }
 
@@ -108,6 +94,12 @@ watch(
     color: #fff;
   }
 }
+
+:deep(.n-card__content) {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 
 @media only screen and (min-width: 768px) and (max-width: 1500px) {
   .content {

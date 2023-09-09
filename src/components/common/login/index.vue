@@ -1,13 +1,8 @@
 <template>
   <n-modal v-model:show="showModal">
     <div class="relative h-400 w-380 flex items-center justify-center b-rd-10 bg-#fff">
-      <TheIcon
-        icon="close"
-        color="#000"
-        type="custom"
-        class="absolute right-20 top-20 cursor-pointer"
-        @click="showModal = false"
-      />
+      <TheIcon icon="close" color="#000" type="custom" class="absolute right-20 top-20 cursor-pointer"
+        @click="showModal = false" />
       <iframe :src="url" scrolling="auto" frameborder="no" class="h-310" />
     </div>
   </n-modal>
@@ -20,16 +15,20 @@ const url = ref('https://test.aigcopen.com/login/wechat')
 const props = defineProps({
   handleOk: {
     type: Function,
-    default: () => {},
+    default: () => { },
   },
   handleCancel: {
     type: Function,
-    default: () => {},
+    default: () => { },
   },
   remove: {
     type: Function,
-    default: () => {},
+    default: () => { },
   },
+  redirect: {
+    type: String,
+    default: ''
+  }
 })
 // 确认
 const confirm = () => {
@@ -41,9 +40,9 @@ const cancel = () => {
   typeof props.handleCancel === 'function' && props.handleCancel()
 }
 
-// const show = () => {
-//   showModal.value = true
-// }
+const show = () => {
+  showModal.value = true
+}
 
 // 监听显示的消失，需要移除dom
 watch(

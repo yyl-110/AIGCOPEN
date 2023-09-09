@@ -18,14 +18,16 @@
     <n-spin :show="loading" stroke="#ffffff">
       <div class="flex-1 overflow-y-auto">
         <!-- 我的对话 -->
-        <div v-if="activeIndex === 0" class="chat min-h-200">
-          <div v-for="(item, index) in filteredData" :key="item.id" :class="selectChat === index ? 'chatActive' : ''"
-            class="mychart mb-7 h-48 w-full flex cursor-pointer items-center justify-between b-rd-6 bg-#D9D9D90F px-8 hover:bg-#FFFFFF61"
-            @click="handelSelect(index, item.id)">
-            <p class="ellipsis1 w-80% text-16">
-              {{ item.messages[0]?.content }}
-            </p>
-            <TheIcon v-if="selectChat === index" icon="del" size="18" type="custom" @click="delRecord(item)" />
+        <div v-if="activeIndex === 0" class="chat ">
+          <div min-h-200 v-if="filteredData.length">
+            <div v-for="(item, index) in filteredData" :key="item.id" :class="selectChat === index ? 'chatActive' : ''"
+              class="mychart mb-7 h-48 w-full flex cursor-pointer items-center justify-between b-rd-6 bg-#D9D9D90F px-8 hover:bg-#FFFFFF61"
+              @click="handelSelect(index, item.id)">
+              <p class="ellipsis1 w-80% text-16">
+                {{ item.messages[0]?.content }}
+              </p>
+              <TheIcon v-if="selectChat === index" icon="del" size="18" type="custom" @click="delRecord(item)" />
+            </div>
           </div>
         </div>
         <!-- prompts -->

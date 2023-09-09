@@ -27,6 +27,24 @@ export const basicRoutes = [
     ],
   },
   {
+    name: 'Stady',
+    path: '/stady',
+    component: Layout,
+    meta: {
+      order: 7,
+    },
+    children: [
+      {
+        name: 'Stady',
+        path: 'https://aigcopen.feishu.cn/docx/LTFfdtijToDEuExCHd0c94pWn5g',
+        meta: {
+          title: '学习',
+          customIcon: 'stady',
+        },
+      },
+    ],
+  },
+  {
     name: 'chatRoom',
     path: '/c',
     component: Layout,
@@ -115,8 +133,7 @@ Object.keys(modules).forEach((key) => {
   asyncRoutes.push(modules[key].default)
 })
 if (!userId) {
-  asyncRoutes = asyncRoutes.filter((i) => i.name !== 'User')
+  asyncRoutes = asyncRoutes.filter((i) => (i.name !== 'User' && i.name !== 'Chat'))
 }
-console.log('asyncRoutes:', asyncRoutes, userId)
 
 export { asyncRoutes }

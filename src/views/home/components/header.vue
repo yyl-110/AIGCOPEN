@@ -1,5 +1,5 @@
 <template>
-  <div class="header px-50 pt-69 lt-sm:px-25 lt-sm:pt-30">
+  <div class="header px-50 pt-69 lt-sm:px-15 lt-sm:pt-30">
     <div class="title flex flex-wrap justify-center flex-items-center">
       <div class="flex flex-nowrap flex-items-center">
         <icon-custom-logo class="flex-shrink-0 lt-sm:text-24" color-primary></icon-custom-logo>
@@ -24,7 +24,7 @@
           搜索
         </n-button>
         <n-button round size="large" type="primary" class="bt2 h-72 b-rd-100 text-20 lt-sm:h-50 lt-sm:w-140 lt-sm:text-16"
-          @click="$router.push('/chat')">
+          @click="authVerifyLink('/chat', $router)">
           <template #icon>
             <icon-custom-chatIcon color-primary></icon-custom-chatIcon>
           </template>
@@ -39,6 +39,7 @@
 <script setup>
 import { ref } from 'vue'
 import _ from 'lodash'
+import { authVerifyLink } from '~/src/utils';
 const emit = defineEmits(['updateValue'])
 const props = defineProps({
   searchValue: {

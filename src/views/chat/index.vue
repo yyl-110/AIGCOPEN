@@ -14,7 +14,8 @@
             </div>
           </div>
           <!-- prompts -->
-          <Prompts :data="data" :chat-state="chatState" @handelSelect="handelSelect" @handelDel="handelDel" :loading="loading" />
+          <Prompts :data="data" :chat-state="chatState" @handelSelect="handelSelect" @handelDel="handelDel"
+            :loading="loading" />
         </div>
         <div
           class="chat relative ml-23 h-full flex-1 b-rd-10 bg-#25262B66 lt-sm:ml-0 lt-sm:mt-10 lt-sm:h-auto lt-sm:min-h-500">
@@ -63,7 +64,7 @@ const fetchData = async () => {
     2: { json: userInfo.userId },
   }
   try {
-    const res = await api.getChatUserInfo({ input: JSON.stringify(params) })
+    const res = userInfo.userId ? await api.getChatUserInfo({ input: JSON.stringify(params) }) : ''
     if (res && res.length) {
       data.value = res[1]?.result?.data?.json
     }

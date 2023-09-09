@@ -1,4 +1,6 @@
 import dayjs from 'dayjs'
+import { useUserStore } from '~/src/store'
+import Login from '@/components/common/login/login'
 
 /**
  * @desc  格式化时间
@@ -119,4 +121,13 @@ export const copy = async (val) => {
     // 复制后移除输入框
     input.remove()
   }
+}
+
+export const authVerifyLink = (url, router) => {
+  const userInfo = useUserStore()
+  if (!userInfo.userId) {
+    Login({ redirect: url })
+    return
+  }
+  router.push(url)
 }
