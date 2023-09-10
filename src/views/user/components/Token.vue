@@ -9,8 +9,7 @@
       <span text-22 font-700>任务</span>
     </div>
     <div
-      class="box mt-16 w-full flex justify-between b-rd-10 bg-#25262BCC px-27 py-20 lt-sm:mt-8 lt-sm:items-center lt-sm:px5 lt-sm:py-5"
-    >
+      class="box mt-16 w-full flex justify-between b-rd-10 bg-#25262BCC px-27 py-20 lt-sm:mt-8 lt-sm:items-center lt-sm:px5 lt-sm:py-5">
       <div class="left flex items-center justify-start">
         <img src="@/assets/images/avatar.png" h69 w69 lt-sm:h40 lt-sm:w40 alt="" class="avatar" />
         <div class="ml-12 h-full flex flex-col justify-center text-#fff lt-sm:ml-4">
@@ -20,14 +19,10 @@
           </p>
         </div>
       </div>
-      <n-button
-        type="info"
-        :size="largerThanSm ? 'large' : 'medium'"
-        class="btn w-115 b-rd-8 text-#fff lt-sm:w-70 hover:text-#fff"
-        :disabled="task?.userId || !isreceive"
-        @click="handelClaimDailyCredit"
-      >
-        {{ task?.userId || isreceive ? '完成' : ' 认领' }}
+      <n-button type="info" :size="largerThanSm ? 'large' : 'medium'"
+        class="btn w-115 b-rd-8 text-#fff lt-sm:w-70 hover:text-#fff" :disabled="task?.userId || isreceive"
+        @click="handelClaimDailyCredit">
+        {{ (task?.userId || isreceive) ? '完成' : ' 认领' }}
       </n-button>
     </div>
   </div>
@@ -37,8 +32,7 @@
       <span text-22 font-700>token记录</span>
     </div>
     <div
-      class="recordItem mt-12 flex justify-between b-rd-10 bg-#1A1B1ECC px-14 px-32 py-15 py-8 text-16 font-bold line-height-23 text-#fff lt-sm:mt-5 lt-sm:px-14 lt-sm:py-8 lt-sm:text-12"
-    >
+      class="recordItem mt-12 flex justify-between b-rd-10 bg-#1A1B1ECC px-14 px-32 py-15 py-8 text-16 font-bold line-height-23 text-#fff lt-sm:mt-5 lt-sm:px-14 lt-sm:py-8 lt-sm:text-12">
       <span>+50.00</span>
       <span class="ellipsis1 w-50% text-center">Daily Login award</span>
       <span>08/10/2023</span>
@@ -54,7 +48,7 @@ import { useUserStore } from '~/src/store'
 const props = defineProps({
   task: {
     type: Object,
-    default: () => {},
+    default: null,
   },
   userCreditNum: {
     type: String,

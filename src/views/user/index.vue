@@ -27,6 +27,7 @@ import { useUserStore } from '~/src/store'
 const userInfoData = ref({})
 const task = ref({})
 const userInfo = useUserStore()
+const userCreditNum = ref('0.00')
 document.title = `${userInfo.name} - ${import.meta.env.VITE_PAGE_TITLE}`
 const fetchUserInfo = async () => {
   const params = {

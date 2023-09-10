@@ -1,15 +1,10 @@
 <template>
   <div h-full w-full flex flex-col>
-    <div
-      class="tabs w-full flex flex-shrink-0 pb-20 pl-30 pt-30 lt-sm:pb-5 lt-sm:pl-8 lt-sm:pt-8"
-      style="border-bottom: 1px solid #ffffff38"
-    >
-      <div
-        v-for="(item, index) in tabs"
+    <div class="tabs w-full flex flex-shrink-0 pb-20 pl-30 pt-30 lt-sm:pb-5 lt-sm:pl-8 lt-sm:pt-8"
+      style="border-bottom: 1px solid #ffffff38">
+      <div v-for="(item, index) in tabs"
         class="tabItem h-38 w-180 flex cursor-pointer items-center justify-center b-rd-6 text-center text-16 font-700 text-#FFFFFFB2 lt-sm:w-80 lt-sm:text-12"
-        :class="tabIndex === index ? 'active' : ''"
-        @click="tabIndex = index"
-      >
+        :class="tabIndex === index ? 'active' : ''" @click="tabIndex = index">
         {{ item }}
       </div>
     </div>
@@ -40,7 +35,7 @@ const tabs = ref(['我的提示词(Prompts)', '已收藏 Prompts', '点赞 Promp
 const props = defineProps({
   task: {
     type: Object,
-    default: () => {},
+    default: null,
   },
   userCreditNum: {
     type: String,
