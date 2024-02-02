@@ -42,7 +42,7 @@
                         1.什么是token？token是AIGCOPEN社区虚拟的积分，可以用来与不同的AI模型进行对话以及使用Prompts提示词。2.如何获得token？社区通过免费发放token来让每个人可以使用到最新的AI模型。只需要在社区完成一系列任务即可获得token
                       </div>
                     </n-tooltip>
-                    <div class="pb-1">消耗 token: {{ consumeToken }}</div>
+                    <div class="pb-1 text-12px">消耗 token: {{ consumeToken }}</div>
                   </div>
                 </div>
               </div>
